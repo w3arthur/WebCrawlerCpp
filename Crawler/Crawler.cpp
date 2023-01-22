@@ -58,21 +58,35 @@ using std::chrono::seconds;
 
 //using namespace std;
 
-list<Image> images;
-json json_images;
+
+mutex visitedUri_m;
 set<string> visitedUri;
-set<string> visitedImageUri;
+
+mutex levels_m;
 unordered_map<size_t, list<string>> levels;
+
+
+mutex visitedImageUri_m;
+set<string> visitedImageUri;
+list<Image> images;             //to delete
+json json_images;
 
 
 static const void search_for_links(GumboNode* node, const string& uri, const size_t& level);
 
 void crawler(const string& uri, const size_t level = 1) //run on thread
 {
-    //mutex1.lock
-    if (visitedUri.find(uri) != visitedUri.end()) return;
-    visitedUri.insert(uri);
-    //mutex1.unlock
+    visitedUri_m.lock();
+    if (visitedUri.find(uri) != visitedUri.end()) 
+    {
+        visitedUri_m.unlock(); 
+        return; 
+    }
+    else
+    {
+        visitedUri.insert(uri);
+        visitedUri_m.unlock();
+    }
     string contents = getHtml(uri);
     GumboOutput* output = gumbo_parse(contents.c_str());
     search_for_links(output->root, uri, level);
@@ -90,11 +104,11 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
             && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))
             )
     {
-        //mutex2.lock
+        levels_m.lock();
        // levels.emplace(level + 1, href->value);
         string hrefValue{ combiner(uri, static_cast<string>(href->value)) };
         levels[level + 1].push_back(hrefValue);
-        //mutex2.unlock
+        levels_m.unlock();
     }
     else if
         (
@@ -103,7 +117,7 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
             && (src = gumbo_get_attribute(&node->v.element.attributes, "src"))
             )
     {
-        //mutex3.lock
+        visitedImageUri_m.lock();
         if
             (
                 string srcValue{ combiner(uri, static_cast<string>(src->value)) };
@@ -114,18 +128,21 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
             images.push_back(Image(srcValue, uri, level));
             json_images["results"].emplace_back(Image(srcValue, uri, level).to_json());
         }
-        //mutex3.unlock
+        visitedImageUri_m.unlock();
     }
     GumboVector* children = &node->v.element.children;  //moving through all the nodes in HTML document
+    vector<thread> threadList;
+    if (children->length > 0) threadList.reserve(children->length);
     for (size_t i{ 0 }; i < children->length; ++i)
     {
         auto childNode
-        {
-            static_cast<GumboNode*>(children->data[i])
-        };
-        //can seprate to threading
+            { static_cast<GumboNode*>(children->data[i]) };
+        threadList.push_back(thread(search_for_links, childNode, uri, level));
         search_for_links(childNode, uri, level);
     }
+
+    for (auto& th : threadList) th.join();
+
 }
 
 
@@ -143,9 +160,9 @@ int main(int argc, char* argv[])
 
 
     cout << "WebCrawler Cpp:" << endl;
-    size_t limitLevels = 2;
+    size_t limitLevels{ 1 };
 
-    string uri1{ "https://arthurcam.com" };
+    string uri1{ "https://www.walla.co.il" };
 
     levels[1].push_back(uri1);
     //auto f = levels[1].front();
@@ -154,12 +171,12 @@ int main(int argc, char* argv[])
 
     for (size_t i{ 1 }; i <= limitLevels; ++i)
     {
-        vector<thread> threadList;
-        if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadList.reserve(levels[i].size());
+        vector<thread> threadGlobalList;
+        if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadGlobalList.reserve(levels[i].size());
         else break; //no elements on i level
         for(auto& levelEl: levels[i])
-            threadList.push_back(thread(crawler, levelEl, i));
-        for (auto&t : threadList)
+            threadGlobalList.push_back(thread(crawler, levelEl, i));
+        for (auto&t : threadGlobalList)
             t.join();
     }
 
