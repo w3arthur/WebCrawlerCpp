@@ -18,15 +18,17 @@
 #include <set>
 #include <map>
 #include <list>
-
+#include <queue>
 #include <functional>
 #include <algorithm>
+#include <thread>
+#include <mutex>
+#include <chrono>
 
-#include <gumbo-query/gumbo.h>  // https://github.com/google/gumbo-parser
+#include <gumbo-query/gumbo.h>  // included
 #include "Classes/Image.h"
-
 //using namespace rapidjson;
-#include <nlohmann/json.hpp>    //include
+#include <nlohmann/json.hpp>    //included
 using json = nlohmann::json;
 
 
@@ -45,8 +47,12 @@ using std::pair;
 using std::function;
 using std::set;
 using std::list;
+using std::queue;
 using std::unordered_map;
-
+using std::thread;
+using std::mutex;
+using std::chrono::duration;
+using std::chrono::seconds;
 
 //#define combiner AddressCombiner::combiner;
 
@@ -117,6 +123,7 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
         {
             static_cast<GumboNode*>(children->data[i])
         };
+        //can seprate to threading
         search_for_links(childNode, uri, level);
     }
 }
@@ -147,13 +154,25 @@ int main(int argc, char* argv[])
 
     for (size_t i{ 1 }; i <= limitLevels; ++i)
     {
-        while (levels.find(i) != levels.end() && !levels.at(i).empty())
+        vector<thread> threadQueue{};
+        //while (
+        //    
+        //    
+        //    
+        //    
+        //    levels.find(i) != levels.end() && !levels.at(i).empty()
+        //    
+        //    
+        //    
+        //    )
+
+        for(auto& levelEl: levels[i])
         {
-            //run multithreading
-            auto front = levels[i].front();
-            levels[i].pop_front();
-            crawler(front, i);
+            auto& front{ levelEl };
+            threadQueue.push_back(thread(crawler, front, i));
         }
+        for (auto&t :threadQueue)
+            t.join();
     }
 
 
