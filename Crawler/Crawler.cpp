@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 
     for (size_t i{ 1 }; i <= limitLevels; ++i)
     {
-        vector<thread> threadList{};
+        vector<thread> threadList;
         if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadList.reserve(levels[i].size());
         else break; //no elements on i level
         for(auto& levelEl: levels[i])
