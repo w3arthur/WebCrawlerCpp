@@ -79,6 +79,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\nlohmann\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -97,6 +98,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\nlohmann\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -115,6 +117,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\nlohmann\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -133,6 +136,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\nlohmann\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -143,12 +147,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddressCombiner.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="HtmlRequest.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Person.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddressCombiner.cpp" />
     <ClCompile Include="CppLib.cpp" />
+    <ClCompile Include="HtmlRequest.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -157,7 +165,17 @@
     </ClCompile>
     <ClCompile Include="Person.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\libxml2-vc140-static-32_64.2.9.4.1\build\native\libxml2-vc140-static-32_64.targets" Condition="Exists('..\packages\libxml2-vc140-static-32_64.2.9.4.1\build\native\libxml2-vc140-static-32_64.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\libxml2-vc140-static-32_64.2.9.4.1\build\native\libxml2-vc140-static-32_64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libxml2-vc140-static-32_64.2.9.4.1\build\native\libxml2-vc140-static-32_64.targets'))" />
+  </Target>
 </Project>

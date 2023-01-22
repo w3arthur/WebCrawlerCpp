@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\rapidjson\include;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\libxml++\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\gumbo-query\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\rapidjson\include;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\libxml++\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\gumbo-query\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\rapidjson\include;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\libxml++\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\gumbo-query\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\rapidjson\include;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\libxml++\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../CppLib;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\gumbo-query\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
