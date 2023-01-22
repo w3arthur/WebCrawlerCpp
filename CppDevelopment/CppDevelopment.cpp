@@ -11,6 +11,7 @@
 #define DEBUG_MODE 1
 
 #include <iostream>
+#include <fstream>
 #include <string> 
 #include <exception>
 #include <vector>
@@ -52,7 +53,7 @@ using std::unordered_map;
 //using namespace std;
 
 list<Image> images;
-json j_images;
+json json_images;
 set<string> visitedUri;
 set<string> visitedImageUri;
 unordered_map<size_t, list<string>> levels;
@@ -105,7 +106,7 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
         {
             visitedImageUri.insert(srcValue);
             images.push_back(Image(srcValue, uri, level));
-            j_images["results"].emplace_back(Image(srcValue, uri, level).to_json());
+            json_images["results"].emplace_back(Image(srcValue, uri, level).to_json());
         }
         //mutex3.unlock
     }
@@ -160,22 +161,21 @@ int main(int argc, char* argv[])
 
     cout << "\n\n\nImages HERE:\n";
 
-    json j_list;
-    j_list["results"] = {};
+    //json j_list;
+    //j_list["results"] = {};
     for (const auto& el : images)
     {
-        j_list["results"].emplace_back(el.to_json());
+       // j_list["results"].emplace_back(el.to_json());
         cout << el.print();
     }
  
-
-   
-    json j_list2(j_images);
-
+    std::ofstream MyFile("result.json");
+    MyFile << json_images;
+    MyFile.close();
 
     cout << "\n\n\n";
 
-    auto a = j_list2.dump();
+    auto a = json_images.dump();
     cout << a << endl << endl << endl;
     //cout << "\n\n\nUri HERE:\n";
     //for (auto el : levels)
