@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "HtmlRequest.h"
 
+
 typedef size_t(*curl_write)(char*, size_t, size_t, std::string*);
 
 std::string getHtml(string url)

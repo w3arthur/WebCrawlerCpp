@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "AddressCombiner.h"
 
+
 // add case for ../
 // add loop for recheck, and another if needed, and empty() checking
 // another cases
@@ -31,7 +32,7 @@ string combiner(string uri1, string uri2)
         }
 
         while (!uri2.empty() && uri2.substr(0, 2) == "./") { uri2 = uri2.substr(2); }
-        while (!uri2.empty() && uri2.substr(0, 3) == "../") 
+        while (!uri2.empty() && uri2.substr(0, 3) == "../")
         {
             //string/it subStringDistance = uri1 //find distance from the end
             //if(! (distance uri1.begin(), subStringDistance == 0 or -1 == '/') )

@@ -2,7 +2,6 @@
 #include "Person.h"
 
 
-
 string Person::print() const
 {
 	string str = "[ ID: ";
@@ -21,3 +20,4 @@ ostream& operator<<(ostream& os, const Person& p)
 	os << p.print();
 	return os;
 }
+

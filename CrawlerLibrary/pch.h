@@ -13,6 +13,7 @@
 #include <map>
 #include <functional>
 #include <algorithm>
+#include <string>
 #include <curl/curl.h>      //vcpkg integrated  //also here https://github.com/curl/curl.git          
 #include <gumbo-query/gumbo.h>  //included // https://github.com/google/gumbo-parser //also could install with vcpkg  //also here https://github.com/google/gumbo-parser.git
 #include <nlohmann/json.hpp>	//included

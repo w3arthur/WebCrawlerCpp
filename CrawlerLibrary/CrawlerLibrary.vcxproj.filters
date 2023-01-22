@@ -32,16 +32,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CrawlerLib.cpp">
+    <ClCompile Include="CrawlerLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AddressCombiner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CppLib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HtmlRequest.cpp">

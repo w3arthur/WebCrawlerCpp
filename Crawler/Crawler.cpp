@@ -48,7 +48,7 @@ using std::list;
 using std::unordered_map;
 
 
-
+//#define combiner AddressCombiner::combiner;
 
 //using namespace std;
 

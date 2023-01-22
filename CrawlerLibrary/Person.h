@@ -17,7 +17,7 @@ public:
 	string gender;
 	string ip_address;
 
-	
+
 private:
 	unordered_map<string, function<void(const json&)>> setValueMap
 	{
