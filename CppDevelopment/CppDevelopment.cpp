@@ -16,13 +16,18 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <list>
 
 #include <functional>
 #include <algorithm>
 
 #include <gumbo-query/gumbo.h>  // https://github.com/google/gumbo-parser
+#include "Classes/Image.h"
 
 //using namespace rapidjson;
+#include <nlohmann/json.hpp>    //include
+using json = nlohmann::json;
+
 
 
 using std::string;
@@ -38,56 +43,83 @@ using std::map;
 using std::pair;
 using std::function;
 using std::set;
+using std::list;
 using std::unordered_map;
-//using json = nlohmann::json;
+
+
+
+
 //using namespace std;
 
+list<Image> images;
+json j_images;
+set<string> visitedUri;
+set<string> visitedImageUri;
+unordered_map<size_t, list<string>> levels;
 
 
+static const void search_for_links(GumboNode* node, const string& uri, const size_t& level);
+
+void crawler(const string& uri, const size_t level = 1) //run on thread
+{
+    //mutex1.lock
+    if(visitedUri.find(uri) != visitedUri.end()) return;
+    visitedUri.insert(uri);
+    //mutex1.unlock
+    string contents = getHtml(uri);
+    GumboOutput* output = gumbo_parse(contents.c_str());
+    search_for_links(output->root, uri, level);
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
+}
 
 
-
-
-
-set<string> s1;
-set<string> s2;
-static const void search_for_links(GumboNode* node) 
+static const void search_for_links(GumboNode* node, const string& uri, const size_t& level)
 {
     if (node->type != GUMBO_NODE_ELEMENT) return;
-
-    if (
+    if 
+        (
         GumboAttribute* href;
         node->v.element.tag == GUMBO_TAG_A
         && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))
         )
     {
-        s1.insert(href->value);
+        //mutex2.lock
+       // levels.emplace(level + 1, href->value);
+        string hrefValue{ combiner(uri, static_cast<string>(href->value)) };
+        levels[level + 1].push_back (hrefValue);
+        //mutex2.unlock
     }
-    else if (
+    else if 
+        (
         GumboAttribute* src;
         node->v.element.tag == GUMBO_TAG_IMG
         && (src = gumbo_get_attribute(&node->v.element.attributes, "src"))
         )
     {
-        s2.insert(src->value);
+        //mutex3.lock
+        if 
+            (
+            string srcValue{ combiner(uri, static_cast<string>(src->value)) };
+            ! (visitedImageUri.find(srcValue) != visitedImageUri.end())
+            )
+        {
+            visitedImageUri.insert(srcValue);
+            images.push_back(Image(srcValue, uri, level));
+            j_images["results"].emplace_back(Image(srcValue, uri, level).to_json());
+        }
+        //mutex3.unlock
     }
-
-
     GumboVector* children = &node->v.element.children;  //moving through all the nodes in HTML document
-    for (unsigned int i = 0; i < children->length; ++i) {
-        auto childNode = static_cast<GumboNode*>(children->data[i]);
-        search_for_links(childNode);
+    for (size_t i{ 0 }; i < children->length; ++i)
+    {
+        auto childNode
+        { 
+            static_cast<GumboNode*>(children->data[i]) 
+        };
+        search_for_links(childNode, uri, level);
     }
 }
 
-void crawler(const string& uri) 
-{
-    std::string contents = getHtml(uri);
-    GumboOutput* output = gumbo_parse(contents.c_str());
-    search_for_links(output->root);
-    gumbo_destroy_output(&kGumboDefaultOptions, output);
-
-}
 
 
 
@@ -99,16 +131,58 @@ int main(int argc, char* argv[])
     //    std::cout << "Please provide a valid English word" << std::endl;
     //    exit(EXIT_FAILURE);
     //}
-
-    cout << "WebCrawler Cpp, Word Dictionary show" << endl;
     //if(argc > 0 || isCliProduction){} else{}
 
 
-    string uri1 = "https://arthurcam.com";
-    crawler(uri1);
-    cout << "\n\n\nHERE:\n";
-    for (auto el : ::s2) { cout << combiner(uri1, el) << '\n'; }
+    cout << "WebCrawler Cpp:" << endl;
+    size_t limitLevels = 2;
 
+    string uri1{ "https://arthurcam.com" };
+
+    levels[1].push_back(uri1);
+    //auto f = levels[1].front();
+    //crawler(f, 1); levels[1].pop_front();
+
+
+    for (size_t i{ 1 }; i <= limitLevels; ++i)
+    {
+        while (levels.contains(i)  && !levels.at(i).empty())
+        {
+            //run multithreading
+            auto front = levels[i].front();
+            levels[i].pop_front();
+            crawler(front, i);
+        }
+    }
+
+
+
+
+    cout << "\n\n\nImages HERE:\n";
+
+    json j_list;
+    j_list["results"] = {};
+    for (const auto& el : images)
+    {
+        j_list["results"].emplace_back(el.to_json());
+        cout << el.print();
+    }
+ 
+
+   
+    json j_list2(j_images);
+
+
+    cout << "\n\n\n";
+
+    auto a = j_list2.dump();
+    cout << a << endl << endl << endl;
+    //cout << "\n\n\nUri HERE:\n";
+    //for (auto el : levels)
+    //{
+    //    for (const auto& listEl: el.second) 
+    //        cout << listEl << endl;
+    //}
 
     //vector<Person> persons;
     //string buffer{ "" };
