@@ -21,34 +21,34 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Person.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AddressCombiner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HtmlRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Person.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CppLib.cpp">
+    <ClCompile Include="CrawlerLib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Person.cpp">
+    <ClCompile Include="AddressCombiner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AddressCombiner.cpp">
+    <ClCompile Include="CppLib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HtmlRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClCompile Include="Person.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

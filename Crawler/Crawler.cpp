@@ -64,7 +64,7 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
 void crawler(const string& uri, const size_t level = 1) //run on thread
 {
     //mutex1.lock
-    if(visitedUri.find(uri) != visitedUri.end()) return;
+    if (visitedUri.find(uri) != visitedUri.end()) return;
     visitedUri.insert(uri);
     //mutex1.unlock
     string contents = getHtml(uri);
@@ -77,32 +77,32 @@ void crawler(const string& uri, const size_t level = 1) //run on thread
 static const void search_for_links(GumboNode* node, const string& uri, const size_t& level)
 {
     if (node->type != GUMBO_NODE_ELEMENT) return;
-    if 
+    if
         (
-        GumboAttribute* href;
-        node->v.element.tag == GUMBO_TAG_A
-        && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))
-        )
+            GumboAttribute* href;
+            node->v.element.tag == GUMBO_TAG_A
+            && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))
+            )
     {
         //mutex2.lock
        // levels.emplace(level + 1, href->value);
         string hrefValue{ combiner(uri, static_cast<string>(href->value)) };
-        levels[level + 1].push_back (hrefValue);
+        levels[level + 1].push_back(hrefValue);
         //mutex2.unlock
     }
-    else if 
+    else if
         (
-        GumboAttribute* src;
-        node->v.element.tag == GUMBO_TAG_IMG
-        && (src = gumbo_get_attribute(&node->v.element.attributes, "src"))
-        )
+            GumboAttribute* src;
+            node->v.element.tag == GUMBO_TAG_IMG
+            && (src = gumbo_get_attribute(&node->v.element.attributes, "src"))
+            )
     {
         //mutex3.lock
-        if 
+        if
             (
-            string srcValue{ combiner(uri, static_cast<string>(src->value)) };
-            ! (visitedImageUri.find(srcValue) != visitedImageUri.end())
-            )
+                string srcValue{ combiner(uri, static_cast<string>(src->value)) };
+                !(visitedImageUri.find(srcValue) != visitedImageUri.end())
+                )
         {
             visitedImageUri.insert(srcValue);
             images.push_back(Image(srcValue, uri, level));
@@ -114,8 +114,8 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
     for (size_t i{ 0 }; i < children->length; ++i)
     {
         auto childNode
-        { 
-            static_cast<GumboNode*>(children->data[i]) 
+        {
+            static_cast<GumboNode*>(children->data[i])
         };
         search_for_links(childNode, uri, level);
     }
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
 
     for (size_t i{ 1 }; i <= limitLevels; ++i)
     {
-        while (levels.contains(i)  && !levels.at(i).empty())
+        while (levels.find(i) != levels.end() && !levels.at(i).empty())
         {
             //run multithreading
             auto front = levels[i].front();
@@ -165,10 +165,10 @@ int main(int argc, char* argv[])
     //j_list["results"] = {};
     for (const auto& el : images)
     {
-       // j_list["results"].emplace_back(el.to_json());
+        // j_list["results"].emplace_back(el.to_json());
         cout << el.print();
     }
- 
+
     std::ofstream MyFile("result.json");
     MyFile << json_images;
     MyFile.close();
