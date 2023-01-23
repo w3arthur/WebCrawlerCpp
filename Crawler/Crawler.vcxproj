@@ -143,7 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Crawler.cpp" />
+    <ClCompile Include="Classes\Crawler.cpp" />
+    <ClCompile Include="Classes\CrawlerRun.cpp" />
+    <ClCompile Include="Classes\Image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Curl_get data by line.txt" />
@@ -157,6 +159,10 @@
     <ProjectReference Include="..\CrawlerLibrary\CrawlerLibrary.vcxproj">
       <Project>{bf9e71f9-d20d-4de5-a37d-d81eb7aeb9c0}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Classes\CrawlerRun.h" />
+    <ClInclude Include="Classes\Image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
