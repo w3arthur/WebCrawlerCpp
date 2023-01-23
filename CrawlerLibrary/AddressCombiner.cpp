@@ -6,7 +6,8 @@
 // add loop for recheck, and another if needed, and empty() checking
 // another cases
 // check for another cases with include
-
+// fix //
+// test all the cases
 
 string combiner(string uri1, string uri2)
 {
@@ -24,12 +25,12 @@ string combiner(string uri1, string uri2)
         while (!uri1.empty() && uri1.back() == '/') uri1.pop_back();
         while (!uri2.empty() && uri2.back() == '/')  uri2.pop_back();
 
-        if (string str = "//";  !uri2.empty() && uri2.length() > 2 && uri2.substr(0, 2) == "//")
+ /*       if (string str = "//";  !uri2.empty() && uri2.length() > 2 && uri2.substr(0, 2) == "//")
         {
             auto endOfStr = std::find_end(uri1.begin(), uri2.end(), str.begin(), str.end());
             uri1 = uri1.substr(0, distance(uri1.begin(), endOfStr));
             uri2 = uri2.substr(2);
-        }
+        }*/
 
         while (!uri2.empty() && uri2.substr(0, 2) == "./") { uri2 = uri2.substr(2); }
         while (!uri2.empty() && uri2.substr(0, 3) == "../")

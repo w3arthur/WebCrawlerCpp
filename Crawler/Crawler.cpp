@@ -131,17 +131,17 @@ static const void search_for_links(GumboNode* node, const string& uri, const siz
         visitedImageUri_m.unlock();
     }
     GumboVector* children = &node->v.element.children;  //moving through all the nodes in HTML document
-    vector<thread> threadList;
-    if (children->length > 0) threadList.reserve(children->length);
+    ////vector<thread> threadList;
+    ////if (children->length > 0) threadList.reserve(children->length);
     for (size_t i{ 0 }; i < children->length; ++i)
     {
         auto childNode
             { static_cast<GumboNode*>(children->data[i]) };
-        threadList.push_back(thread(search_for_links, childNode, uri, level));
+        ///threadList.push_back(thread(search_for_links, childNode, uri, level));
         search_for_links(childNode, uri, level);
     }
 
-    for (auto& th : threadList) th.join();
+    ////for (auto& th : threadList) th.join();
 
 }
 
@@ -160,13 +160,11 @@ int main(int argc, char* argv[])
 
 
     cout << "WebCrawler Cpp:" << endl;
-    size_t limitLevels{ 1 };
+    size_t limitLevels{ 3 };
 
-    string uri1{ "https://www.walla.co.il" };
+    string uri1{ "https://arthurcam.com" };
 
     levels[1].push_back(uri1);
-    //auto f = levels[1].front();
-    //crawler(f, 1); levels[1].pop_front();
 
 
     for (size_t i{ 1 }; i <= limitLevels; ++i)
