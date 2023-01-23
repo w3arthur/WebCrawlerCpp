@@ -9,10 +9,23 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
+
 #include <iostream>
+#include <fstream>
+#include <string> 
+#include <exception>
+#include <vector>
+#include <set>
 #include <map>
+#include <list>
+#include <queue>
 #include <functional>
 #include <algorithm>
+
+#include <thread>
+#include <mutex>
+#include <chrono>
+
 
 #include <curl/curl.h>      //vcpkg integrated  //also here https://github.com/curl/curl.git          
 #include <gumbo-query/gumbo.h>  //included // https://github.com/google/gumbo-parser //also could install with vcpkg  //also here https://github.com/google/gumbo-parser.git

@@ -2,20 +2,14 @@
 // begins and ends there.
 //
 
-//https://github.com/nlohmann/json
-
-
-#include "CrawlerRun.h"
 
 #define DEBUG_MODE 1
 
-
-
-
-//#define combiner AddressCombiner::combiner;
-
-//using namespace std
-
+#include <iostream>
+#include <CrawlerRun.h>
+using std::cout;
+using std::endl;
+using std::string;
 
 
 int main(int argc, char* argv[])
@@ -54,13 +48,8 @@ int main(int argc, char* argv[])
 
 
 
-
-
-
-
-
 #if DEBUG_MODE == 1
-    std::cout << "\n\nDebugging mode\n";
+   // std::cout << "\n\nDebugging mode\n";
     //for (auto p : persons)
     //    cout << p << "\n";
    // cin.get();  //debug  

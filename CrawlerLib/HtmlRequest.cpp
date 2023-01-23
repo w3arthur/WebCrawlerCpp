@@ -4,7 +4,7 @@
 
 typedef size_t(*curl_write)(char*, size_t, size_t, std::string*);
 
-string getHtml(string url)
+std::string getHtml(std::string url)
 {
     CURLcode res_code = CURLE_FAILED_INIT;
     CURL* curl = curl_easy_init();
