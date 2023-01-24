@@ -166,7 +166,7 @@ TEST_P(CombineAddressTest, ExternalGenerator)
 	EXPECT_EQ(assume, result);
 }
 
-INSTANTIATE_TEST_CASE_P(AllUnExpectedValueTests, CombineAddressTest, ::testing::Values(
+INSTANTIATE_TEST_CASE_P(AddressCombinerTestAllUnExpectedValueTests, CombineAddressTest, ::testing::Values(
 	Data{
 		"http://www.site1.com:1234/folder1//////////////" , "folder2////////////"
 		, "http://www.site1.com:1234/folder1/folder2" 
