@@ -5,6 +5,7 @@
 //what to do about www or redirections ?
 //	issue //
 // issue /
+// improve string to string_view for better performance
 
 TEST(AddressCombinerTest, AddressCombiner_EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
@@ -100,7 +101,6 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryAndSecondaryWithExtraSla
 	const std::string& assume = combiner(primaryAddress, secondaryAddress);
 	EXPECT_EQ(assume, result);
 }
-
 
 
 TEST(AddressCombinerTest, AddressCombiner_TrimTestForBothAddresses_ExpectedCombineRighBothAddress) {
