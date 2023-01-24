@@ -17,13 +17,34 @@ using ::testing::ValuesIn;
 // improve string to string_view for better performance
 
 
-TEST(AddressCombinerTest, EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress) {
-	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
-	std::string secondaryAddress = "http://www.site2.com/folder2/";
-	const std::string& result = secondaryAddress;
-	const std::string& assume = combiner(primaryAddress, secondaryAddress);
+class Data
+{
+public:
+	std::string primaryAddress, secondaryAddress, expectedResult;
+};
+
+
+struct AddressCombinerTestResplacingBySecondaryAddressTest : ::testing::Test
+{
+	const std::string& primaryAddress = "http://www.site1.com:1234/folder1/";
+	const std::string& secondaryAddress = "http://www.site2.com/folder2/";
+	Data* d;
+	void SetUp() { d = new Data{ primaryAddress, secondaryAddress, secondaryAddress }; }
+	void TearDown() { delete d; }
+	// another way
+	//ResplacingBySecondaryAddressTest() { account = new Data{/*...*/}; }
+	//~ResplacingBySecondaryAddressTest() { delete d; }
+};
+
+
+
+TEST_F(AddressCombinerTestResplacingBySecondaryAddressTest, EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress)
+{	
+	const std::string& result = d->expectedResult;
+	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
 	EXPECT_EQ(assume, result);
 }
+
 
 TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
@@ -32,6 +53,9 @@ TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithSlash_ExpectedComb
 	const std::string& assume = combiner(primaryAddress, secondaryAddress);
 	EXPECT_EQ(assume, result);
 }
+
+
+
 
 TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryNoSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
@@ -112,13 +136,6 @@ TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithDoubleSlash_Expected
 
 
 
-
-
-class Data
-{
-public:
-	std::string primaryAddress, secondaryAddress, expectedResult;
-};
 
 
 class CombineAddressTest : public ::testing::TestWithParam<Data> {
