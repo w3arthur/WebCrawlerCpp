@@ -661,18 +661,18 @@ class binary_writer
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
-                    const std::uint8_t output_type = use_ext
-                                                     ? 0xC8 // ext 16
-                                                     : 0xC5; // bin 16
+                    std::uint8_t output_type = use_ext
+                                               ? 0xC8 // ext 16
+                                               : 0xC5; // bin 16
 
                     oa->write_character(to_char_type(output_type));
                     write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
-                    const std::uint8_t output_type = use_ext
-                                                     ? 0xC9 // ext 32
-                                                     : 0xC6; // bin 32
+                    std::uint8_t output_type = use_ext
+                                               ? 0xC9 // ext 32
+                                               : 0xC6; // bin 32
 
                     oa->write_character(to_char_type(output_type));
                     write_number(static_cast<std::uint32_t>(N));
@@ -1258,8 +1258,8 @@ class binary_writer
     */
     static std::size_t calc_bson_object_size(const typename BasicJsonType::object_t& value)
     {
-        const std::size_t document_size = std::accumulate(value.begin(), value.end(), static_cast<std::size_t>(0),
-                                          [](size_t result, const typename BasicJsonType::object_t::value_type & el)
+        std::size_t document_size = std::accumulate(value.begin(), value.end(), static_cast<std::size_t>(0),
+                                    [](size_t result, const typename BasicJsonType::object_t::value_type & el)
         {
             return result += calc_bson_element_size(el.first, el.second);
         });

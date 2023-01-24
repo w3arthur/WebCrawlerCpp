@@ -14,12 +14,11 @@
 #include <curl/curl.h>      //vcpkg integrated  //also here https://github.com/curl/curl.git          
 
 //included in headers
-#include <gumbo-query/gumbo.h>  // included
+#include <gumbo/gumbo.h>  // included
 #include <nlohmann/json.hpp>	//#include
 #include "Image.h"  //#include <nlohmann/json.hpp>    //included    //#include <string>     //#include <unordered_map>
 #include <mutex>
 #include <set>
-#include <gumbo-query/gumbo.h>  // included
 //
 
 using std::string;

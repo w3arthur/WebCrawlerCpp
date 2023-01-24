@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Image.h"  //#include <nlohmann/json.hpp>    //included    //#include <string>     //#include <unordered_map>
-#include <mutex>
-#include <set>
-#include <gumbo-query/gumbo.h>  // included
+#include "Image.h"  //#include
+
+//#include <set>
+//#include <gumbo-query/gumbo.h>  // included
 
 class CrawlerRun
 {
