@@ -2,7 +2,6 @@
 // begins and ends there.
 //
 
-
 #define DEBUG_MODE 1
 
 //#include <iostream>
@@ -55,16 +54,7 @@ int main(int argc, char* argv[])
 
 
 #if DEBUG_MODE == 1
-   // std::cout << "\n\nDebugging mode\n";
-    //for (auto p : persons)
-    //    cout << p << "\n";
-   // cin.get();  //debug  
+   std::cout << "\n\nDebugging mode\n";
+   std::cin.get();  //debug  
 #endif // DEBUG
 }
-
-
-
-
-
-
-

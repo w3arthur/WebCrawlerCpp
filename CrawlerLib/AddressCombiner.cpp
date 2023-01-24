@@ -13,6 +13,9 @@
 // default not require www
 
 
+
+void dotDotSlashCase(string& uri1, string& uri2);
+
 string combiner(string uri1, string uri2)
 {
     {    //uri 1 as copy
@@ -53,13 +56,7 @@ string combiner(string uri1, string uri2)
                 if (sub2Char == "./") { uri2 = uri2.substr(2); }
                 else if (sub3Char == "../")
                 {
-                    uri2 = uri2.substr(3);
-                    size_t slash = uri1.find_last_of("/");
-                    size_t doubleslash = uri1.find("//") + 1;   //or :// +2
-                    string before = uri1.substr(0, slash);
-                    string after = uri1.substr(slash + 1);
-                    //bool isAnAddress
-                    if (!before.empty() && before != after && doubleslash != slash)  uri1 = before; //uri1 = uri1.substr(0, slash)
+                    dotDotSlashCase(uri1, uri2);
                 }
                 else if (sub2Char == "//") 
                 {
@@ -99,7 +96,7 @@ string combiner(string uri1, string uri2)
             }
             else if (uri2.size() > 1 && uri2.substr(0, 2) == "..")
             {
-                uri2 = uri2.substr(2);
+                dotDotSlashCase(uri1, uri2);
             }
             else if (uri2.size() > 0 && uri2.substr(0, 1) == ".")
             {
@@ -130,4 +127,18 @@ string combiner(string uri1, string uri2)
         return combined_uri;
     }
 
+}
+
+
+
+
+void dotDotSlashCase(string& uri1, string& uri2)
+{
+    uri2 = uri2.size() > 2 ? uri2.substr(3) : "";
+    size_t slash = uri1.find_last_of("/");
+    size_t doubleslash = uri1.find("//") + 1;   //or :// +2
+    string before = uri1.substr(0, slash);
+    string after = uri1.substr(slash + 1);
+    //bool isAnAddress
+    if (!before.empty() && before != after && doubleslash != slash)  uri1 = before; //uri1 = uri1.substr(0, slash)
 }

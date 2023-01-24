@@ -1,4 +1,13 @@
 #include "pch.h"
+using ::testing::AddGlobalTestEnvironment;
+using ::testing::Bool;
+using ::testing::Combine;
+using ::testing::Message;
+using ::testing::Range;
+using ::testing::TestWithParam;
+using ::testing::Values;
+using ::testing::ValuesIn;
+
 
 //#include "AddressCombiner.h"
 
@@ -6,6 +15,7 @@
 //	issue //
 // issue /
 // improve string to string_view for better performance
+
 
 TEST(AddressCombinerTest, EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
@@ -58,10 +68,7 @@ TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDotSlash_ExpectedC
 
 
 
-//disabling tes https://stackoverflow.com/questions/7208070/googletest-how-to-skip-a-test
-
-
-TEST(AddressCombinerTest, AddressCombiner_TrimTestForBothAddresses_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, InputTrimTestForBothAddresses_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "        http://www.site1.com:1234/folder1//////////////               ";
 	std::string secondaryAddress = "                 folder2////////////         ";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
@@ -69,7 +76,7 @@ TEST(AddressCombinerTest, AddressCombiner_TrimTestForBothAddresses_ExpectedCombi
 	EXPECT_EQ(assume, result);
 }
 
-TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressWithFolderBack) {
+TEST(AddressCombinerTest, InputPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressWithFolderBack) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
 	std::string secondaryAddress = "../folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder2";
@@ -78,7 +85,7 @@ TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_Exp
 }
 
 
-TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressNoFolderBack) {
+TEST(AddressCombinerTest, InputPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressNoFolderBack) {
 	std::string primaryAddress = "http://www.site1.com:1234/";
 	std::string secondaryAddress = "../folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder2";
@@ -86,35 +93,7 @@ TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_Exp
 	EXPECT_EQ(assume, result);
 }
 
-TEST(AddressCombinerTest, EnteredSecondaryWithDoubleDotSlashOnly_ExpectedNoChangingAdrees) {
-	std::string primaryAddress = "http://www.site1.com:1234/";
-	std::string secondaryAddress = "../";
-	const std::string& result = "http://www.site1.com:1234";
-	const std::string& assume = combiner(primaryAddress, secondaryAddress);
-	EXPECT_EQ(assume, result);
-}
 
-TEST(AddressCombinerTest, EnteredSecondaryWithDotSlashOnly_ExpectedNoChangingAdrees) {
-	std::string primaryAddress = "http://www.site1.com:1234/";
-	std::string secondaryAddress = "./";
-	const std::string& result = "http://www.site1.com:1234";
-	const std::string& assume = combiner(primaryAddress, secondaryAddress);
-	EXPECT_EQ(assume, result);
-}
-
-TEST(AddressCombinerTest, EnteredPrimaryAndSecondaryWithExtraSlashesAfter_ExpectedCombineRighBothAddress) {
-	std::string primaryAddress = "http://www.site1.com:1234/folder1//////////////";
-	std::string secondaryAddress = "folder2////////////";
-	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
-	const std::string& assume = combiner(primaryAddress, secondaryAddress);
-	EXPECT_EQ(assume, result);
-}
-
-
-
-
-
-////to fix !!!
 TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1";
 	std::string secondaryAddress = "/folder2/";			//WRONG !!!
@@ -123,7 +102,6 @@ TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithSlash_ExpectedCombin
 	EXPECT_EQ(assume, result);
 }
 
-//to fix !!!
 TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithDoubleSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1";
 	std::string secondaryAddress = "//site2.com/folder2/";
@@ -132,3 +110,56 @@ TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithDoubleSlash_Expected
 	EXPECT_EQ(assume, result);
 }
 
+
+
+
+
+class Data
+{
+public:
+	std::string primaryAddress, secondaryAddress, expectedResult;
+};
+
+
+class CombineAddressTest : public ::testing::TestWithParam<Data> {
+public:
+	string assume;
+	string result;
+	CombineAddressTest() {
+		auto as = GetParam();
+		assume = combiner(as.primaryAddress, as.secondaryAddress);
+		result = as.expectedResult;
+	}
+	~CombineAddressTest() {}
+
+};
+
+TEST_P(CombineAddressTest, ExternalGenerator) {
+	//auto as = GetParam();
+	//const std::string& assume = combiner(as.primaryAddress, as.secondaryAddress);
+	//const std::string& result = as.expectedResult;
+	EXPECT_EQ(assume, result);
+}
+
+INSTANTIATE_TEST_CASE_P(AllUnExpectedValueTests, CombineAddressTest, ::testing::Values(
+	Data{
+		"http://www.site1.com:1234/folder1//////////////" , "folder2////////////"
+		, "http://www.site1.com:1234/folder1/folder2" 
+		}
+	, Data{ "http://www.site1.com:1234/","./","http://www.site1.com:1234" }
+	, Data{ "http://www.site1.com:1234/folder1/","./","http://www.site1.com:1234/folder1" }
+	, Data{ "http://www.site1.com:1234/","../","http://www.site1.com:1234" }
+	, Data{ "http://www.site1.com:1234/","//","http://www.site1.com:1234" }
+	, Data{ "http://www.site1.com:1234/folder1/","../","http://www.site1.com:1234" }	//to fix
+), );
+
+
+
+//disabling tes https://stackoverflow.com/questions/7208070/googletest-how-to-skip-a-test
+TEST(AddressCombinerTest, DISABLED_PrivateCaseForP) {	//DISABLED_
+	std::string primaryAddress = "http://www.site1.com:1234/folder1";
+	std::string secondaryAddress = "../";
+	const std::string& result = "http://www.site1.com:1234";
+	const std::string& assume = combiner(primaryAddress, secondaryAddress);
+	EXPECT_EQ(assume, result);
+}
