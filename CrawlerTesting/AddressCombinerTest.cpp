@@ -7,7 +7,7 @@
 // issue /
 // improve string to string_view for better performance
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress) {
+TEST(AddressCombinerTest, EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
 	std::string secondaryAddress = "http://www.site2.com/folder2/";
 	const std::string& result = secondaryAddress;
@@ -15,7 +15,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredSecondaryFullPathAddress_Expect
 	EXPECT_EQ(assume, result);
 }
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
 	std::string secondaryAddress = "/folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
@@ -24,7 +24,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithSl
 }
 
 ////to fix !!!
-//TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryNoSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) {
+//TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) {
 //	std::string primaryAddress = "http://www.site1.com:1234/folder1";
 //	std::string secondaryAddress = "/folder2/";			//WRONG !!!
 //	const std::string& result = "http://www.site1.com:1234/folder2";
@@ -32,16 +32,16 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithSl
 //	EXPECT_EQ(assume, result);
 //}
 //
-////to fix !!!
-//TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryNoSlashSecondaryWithDoubleSlash_ExpectedCombineRighBothAddress) {
-//	std::string primaryAddress = "http://www.site1.com:1234/folder1";
-//	std::string secondaryAddress = "//site2.com/folder2/";			//WRONG !!!
-//	const std::string& result = "http://site2.com/folder2";
-//	const std::string& assume = combiner(primaryAddress, secondaryAddress);
-//	EXPECT_EQ(assume, result);
-//}
+//to fix !!!
+TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithDoubleSlash_ExpectedCombineRighBothAddress) {
+	std::string primaryAddress = "http://www.site1.com:1234/folder1";
+	std::string secondaryAddress = "//site2.com/folder2/";			//WRONG !!!
+	const std::string& result = "http://site2.com/folder2";
+	const std::string& assume = combiner(primaryAddress, secondaryAddress);
+	EXPECT_EQ(assume, result);
+}
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryNoSlash_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryNoSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
 	std::string secondaryAddress = "folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
@@ -50,7 +50,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryNoSlas
 }
 
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1";
 	std::string secondaryAddress = "folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
@@ -58,7 +58,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryNoSlashSecondaryNoSlash_
 	EXPECT_EQ(assume, result);
 }
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryNoSlashSecondaryWithDotSlash_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, EnteredPrimaryNoSlashSecondaryWithDotSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1";
 	std::string secondaryAddress = "./folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
@@ -66,7 +66,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryNoSlashSecondaryWithDotS
 	EXPECT_EQ(assume, result);
 }
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithDotSlash_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDotSlash_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
 	std::string secondaryAddress = "./folder2/";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
@@ -75,7 +75,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithDo
 }
 //
 ////to fix !!!
-//TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressWithFolderBack) {
+//TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressWithFolderBack) {
 //	std::string primaryAddress = "http://www.site1.com:1234/folder1/";
 //	std::string secondaryAddress = "../folder2/";
 //	const std::string& result = "http://www.site1.com:1234/folder2";
@@ -84,7 +84,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithDo
 //}
 //
 ////to fix !!!
-//TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressNoFolderBack) {
+//TEST(AddressCombinerTest, EnteredPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressNoFolderBack) {
 //	std::string primaryAddress = "http://www.site1.com:1234/";
 //	std::string secondaryAddress = "../folder2/";
 //	const std::string& result = "http://www.site1.com:1234/folder2";
@@ -94,7 +94,7 @@ TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryWithSlashSecondaryWithDo
 
 
 
-TEST(AddressCombinerTest, AddressCombiner_EnteredPrimaryAndSecondaryWithExtraSlashesAfter_ExpectedCombineRighBothAddress) {
+TEST(AddressCombinerTest, EnteredPrimaryAndSecondaryWithExtraSlashesAfter_ExpectedCombineRighBothAddress) {
 	std::string primaryAddress = "http://www.site1.com:1234/folder1//////////////";
 	std::string secondaryAddress = "folder2////////////";
 	const std::string& result = "http://www.site1.com:1234/folder1/folder2";
