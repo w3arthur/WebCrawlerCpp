@@ -14,7 +14,7 @@ using std::cout;
 using std::endl;
 
 // make the testing
-// to do, to recheck curl package for 64 bit, with DLL from VCPKG or from them site
+// to do, to recheck curl package for x64, with DLL from VCPKG or from them site
 // create task time limit to compile, like an exit token
 
 

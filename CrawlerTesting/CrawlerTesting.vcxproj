@@ -36,7 +36,8 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="AddressCombinerTest.cpp" />
+    <ClCompile Include="TrueTest.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -50,6 +51,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CrawlerLibrary\CrawlerLibrary.vcxproj">
       <Project>{bf9e71f9-d20d-4de5-a37d-d81eb7aeb9c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\CrawlerLib\CrawlerLib.vcxproj">
+      <Project>{e9c6f857-ccd5-42a8-9889-d2cd92ad71a3}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup />
@@ -66,15 +70,18 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo\include;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\curl\include\x86-windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\curl\lib\x86-windows;$(SolutionDir)Dependencies\gumbo-query\lib\x86-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;gumbo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\gumbo\include\x86-windows;$(SolutionDir)Dependencies\curl\include\x86-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gumbo.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y/d "$(SolutionDir)Dependencies\curl\include\x86-windows\libcurl.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -85,15 +92,18 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo\include;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\curl\include\x64-windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\curl\lib\x64-windows;$(SolutionDir)Dependencies\gumbo-query\lib\x64-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;gumbo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\gumbo\include\x64-windows;$(SolutionDir)Dependencies\curl\include\x64-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gumbo.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y/d "$(SolutionDir)Dependencies\curl\include\x64-windows\libcurl.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -103,7 +113,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo\include;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\curl\include\x86-windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -111,9 +121,12 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\curl\lib\x86-windows;$(SolutionDir)Dependencies\gumbo-query\lib\x86-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;gumbo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\gumbo\include\x86-windows;$(SolutionDir)Dependencies\curl\include\x86-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gumbo.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y/d "$(SolutionDir)Dependencies\curl\include\x86-windows\libcurl.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -123,7 +136,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo-query\include;$(SolutionDir)Dependencies\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CrawlerLib;$(SolutionDir)Dependencies\gumbo\include;$(SolutionDir)Dependencies\nlohmann\include;$(SolutionDir)Dependencies\curl\include\x64-windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -131,9 +144,12 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\curl\lib\x64-windows;$(SolutionDir)Dependencies\gumbo-query\lib\x64-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;gumbo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\gumbo\include\x64-windows;$(SolutionDir)Dependencies\curl\include\x64-windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gumbo.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y/d "$(SolutionDir)Dependencies\curl\include\x64-windows\libcurl.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
