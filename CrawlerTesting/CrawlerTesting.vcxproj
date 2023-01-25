@@ -57,6 +57,9 @@
       <Project>{e9c6f857-ccd5-42a8-9889-d2cd92ad71a3}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="test_case.json" />
+  </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

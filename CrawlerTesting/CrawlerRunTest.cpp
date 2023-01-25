@@ -95,9 +95,6 @@ TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToRe
 
 
 
-
-
-
 TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
 {
 	MockCrawlerRun mock_cr;
@@ -133,6 +130,63 @@ TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectT
 	EXPECT_EQ(assume, result);
 }
 
+
+
+void empti_the_file(const std::string& file_name) 
+{
+	std::ofstream MyFile(file_name);
+	MyFile << "";
+	MyFile.close();
+}
+
+string read_from_file(const std::string& file_name)
+{
+	std::string buffer;
+	std::ifstream MyFile;
+	MyFile.open(file_name);
+	if (!MyFile.is_open()) return "READING FILE ISSUE";
+	MyFile.seekg(0, std::ios::end);
+	buffer.resize(MyFile.tellg());
+	MyFile.seekg(0, std::ios::beg);
+	MyFile.read(&buffer[0], buffer.size());
+	MyFile.close();
+	return buffer;
+}
+
+
+TEST(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
+{
+	MockCrawlerRun mock_cr;
+
+	const auto mock_string =
+		R"V0G0N(
+			<!doctype><html><head></head><body>
+				<h1> Title <h1>
+				<img src="image1.jpg">
+			</body></html>
+		)V0G0N";
+
+	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
+
+	mock_cr.init("", 1);
+	const auto file_name = "test_case.json";
+
+	//empti the file
+	empti_the_file(file_name);
+
+
+	mock_cr.write_to_file(file_name);
+
+	auto assume = mock_cr.to_string();
+	auto result = read_from_file(file_name);
+
+
+	//also starts with {
+	EXPECT_EQ(assume, result);
+
+	//empti the file
+	empti_the_file(file_name);
+}
 
 
 
