@@ -4,12 +4,18 @@
 
 
 //#include <fstream>
-
+//#include <thread>
+//#include <chrono>
 //constructor
 
 
-void CrawlerRun::init(const std::string begin_address, size_t crawler_levels)
+void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
 {
+    this->begin_address = begin_address;
+    this->crawler_levels = crawler_levels;
+    lastDurationSec = 0;
+    auto startTime{ std::chrono::high_resolution_clock::now() };
+
     levels[1].push_back(begin_address);
     for (size_t i{ 1 }; i <= crawler_levels; ++i)
     {
@@ -24,6 +30,9 @@ void CrawlerRun::init(const std::string begin_address, size_t crawler_levels)
         for (auto& t : threadGlobalList)
             t.join();
     }
+    auto stopTime{ std::chrono::high_resolution_clock::now() };
+    auto duration{ std::chrono::duration_cast<std::chrono::seconds> (stopTime - startTime) };
+    lastDurationSec = duration.count();
 }
 
 
@@ -36,12 +45,13 @@ void CrawlerRun::print() const
 {
     //json j_list;
     //j_list["results"] = {};
-    std::cout << "all images data:\n";
+    std::cout << "all images data:\n" << "duration (" << std::to_string(lastDurationSec) << ") sec\n";
     for (const auto& el : images)
     {
         // j_list["results"].emplace_back(el.to_json());
         std::cout << el.print();
     }
+    std::cout << "\ndone, all images data collected\n" << "duration (" << std::to_string(lastDurationSec) << ") sec\n";
 }
 
 void CrawlerRun::write_to_file(const string& file_address_name) const

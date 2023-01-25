@@ -47,6 +47,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="dont_care_test_case.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

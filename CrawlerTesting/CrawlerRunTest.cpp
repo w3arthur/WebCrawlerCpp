@@ -36,7 +36,7 @@ class MyCrawlerRun : public CrawlerRun //, public ICrawlerRun
 {
 public:	//protected methods from class CrawlerRun
 	MyCrawlerRun () = default;
-	void init(const std::string begin_address, size_t crawler_levels) 
+	void init(const std::string& begin_address, size_t crawler_levels) 
 	{
 		CrawlerRun::init(begin_address, crawler_levels);
 	}
@@ -60,7 +60,7 @@ public:	//protected methods from class CrawlerRun
 class MockCrawlerRun : public MyCrawlerRun //, public ICrawlerRun
 {
 public:
-	MOCK_METHOD1(get_html, string (const string& uri));
+	MOCK_METHOD1(get_html, std::string (const std::string& uri));
 };
 
 

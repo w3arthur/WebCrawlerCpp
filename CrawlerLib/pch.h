@@ -17,6 +17,8 @@
 #include <gumbo/gumbo.h>  // included
 #include <nlohmann/json.hpp>	//#include
 #include "Image.h"  //#include <nlohmann/json.hpp>    //included    //#include <string>     //#include <unordered_map>
+#include <thread>
+#include <chrono>
 #include <mutex>
 #include <set>
 //

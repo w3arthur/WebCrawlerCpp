@@ -7,12 +7,11 @@
 
 class CrawlerRun : public ICrawlerRun
 {
-    //string begin_address;
-    //size_t crawler_levels;
 private:
+    string begin_address;
+    size_t crawler_levels;
     size_t timeLimit{100};   //to set
-public:
-    void setTimeLimit(size_t timeLimit) { this->timeLimit = timeLimit; }   //to set
+    long long lastDurationSec{ 0 };
 
 private:
     std::mutex visitedUri_m;
@@ -32,6 +31,7 @@ private:
 public:
     explicit CrawlerRun(const std::string& begin_address, size_t crawler_levels);
 public:
+    void setTimeLimit(size_t timeLimit) { this->timeLimit = timeLimit; }   //to set
     void print() const;
     void write_to_file(const std::string& file_address_name) const;
     std::string to_string() const;
@@ -39,7 +39,7 @@ public:
 protected:  //mock testing
     explicit CrawlerRun() = default;
 protected: //set as protected!, rty to delete virtual
-    void init(const std::string begin_address, size_t crawler_levels);
+    void init(const std::string& begin_address, size_t crawler_levels);
     string get_html(const string& uri);
     void search_for_links(GumboNode* node, const std::string& uri, const size_t& level);
     void crawler(const std::string& uri, size_t level); //run on thread
