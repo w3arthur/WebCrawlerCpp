@@ -20,25 +20,19 @@ using ::testing::DoAll;
 
 
 
-class FakeCrawlerRun
+class FakeCrawlerRun : public ICrawlerRun
 {
-
+private:
+	ICrawlerRun* cr;
+public:
+	FakeCrawlerRun(const std::string& begin_address, size_t crawler_levels)
+		: cr{ new CrawlerRun(begin_address, crawler_levels) } { }
+	~FakeCrawlerRun() { delete cr; }
 };
 
-//
-//class IICrawlerRun: ICrawlerRun	//set to interface
-//{
-//public:
-//	virtual string get_html(const string& uri) const { return ""; };
-//	virtual void search_for_links(GumboNode* node, const string& uri, const size_t& level){};
-//	virtual void crawler(const string& uri, size_t level) {};
-//	virtual void print() const {};
-//	virtual void write_to_file(const string& file_address_name) const {};
-//	virtual string to_string() const {};
-//};
-//
 
-class MyCrawlerRun : public CrawlerRun
+
+class MyCrawlerRun : public CrawlerRun //, public ICrawlerRun
 {
 public:	//protected methods from class CrawlerRun
 	MyCrawlerRun () = default;
@@ -63,7 +57,7 @@ public:	//protected methods from class CrawlerRun
 
 
 
-class MockCrawlerRun : public MyCrawlerRun //, ICrawlerRun
+class MockCrawlerRun : public MyCrawlerRun //, public ICrawlerRun
 {
 public:
 	MOCK_METHOD1(get_html, string (const string& uri));
