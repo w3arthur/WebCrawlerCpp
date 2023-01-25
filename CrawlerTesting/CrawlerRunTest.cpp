@@ -19,16 +19,16 @@ using ::testing::DoDefault;
 using ::testing::DoAll;
 
 
-
-class FakeCrawlerRun : public ICrawlerRun
-{
-private:
-	ICrawlerRun* cr;
-public:
-	FakeCrawlerRun(const std::string& begin_address, size_t crawler_levels)
-		: cr{ new CrawlerRun(begin_address, crawler_levels) } { }
-	~FakeCrawlerRun() { delete cr; }
-};
+	//will not use
+//class FakeCrawlerRun : public ICrawlerRun
+//{
+//private:
+//	ICrawlerRun* cr;
+//public:
+//	FakeCrawlerRun(const std::string& begin_address, size_t crawler_levels)
+//		: cr{ new CrawlerRun(begin_address, crawler_levels) } { }
+//	~FakeCrawlerRun() { delete cr; }
+//};
 
 
 
