@@ -23,7 +23,8 @@ string combiner(string uri1, string uri2)
     {    //uri 1 as copy
         //if (uri1.find("://" != uri1.npos())
         if (uri2.find("://") != std::string::npos) return uri2;
-        //else  return uri1 + uri2;
+        else if (!uri2.empty() && uri2.size() == 1 && uri2.substr(0, 1) == "/")
+            slashCase(uri1, uri2);
 
         auto trim = [](string& s)
         {
@@ -70,8 +71,7 @@ string combiner(string uri1, string uri2)
             dotDotSlashCase(uri1, uri2);
         else if (!uri2.empty() && uri2.size() == 1 && uri2.substr(0, 1) == ".")
             uri2 = uri2.substr(1);
-        else if (!uri2.empty() && uri2.size() == 1 && uri2.substr(0, 1) == "/")
-            slashCase(uri1, uri2);
+        
 
         //combined rule, adding a '/' betwin uri1/uri2
         if (!uri1.empty() && !uri2.empty() && uri1.back() != '/' && uri2.front() != '/') uri1 += '/';

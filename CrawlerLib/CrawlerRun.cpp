@@ -6,7 +6,9 @@
 //#include <fstream>
 
 //constructor
-CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
+
+
+void CrawlerRun::init(const std::string begin_address, size_t crawler_levels)
 {
     levels[1].push_back(begin_address);
     for (size_t i{ 1 }; i <= crawler_levels; ++i)
@@ -22,6 +24,12 @@ CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
         for (auto& t : threadGlobalList)
             t.join();
     }
+}
+
+
+CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
+{
+    init(begin_address, crawler_levels);
 }
 
 void CrawlerRun::print() const
@@ -48,7 +56,7 @@ string CrawlerRun::to_string() const
     auto images_j = json_images;
     auto images_s = images_j.dump();
     return images_s;
-}
+} 
 
 
 string CrawlerRun::get_html(const string& uri)

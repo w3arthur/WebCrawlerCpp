@@ -173,11 +173,12 @@ INSTANTIATE_TEST_CASE_P(AddressCombinerTestAllUnExpectedValueTests, CombineAddre
 		"http://www.site1.com:1234/folder1//////////////", "folder2////////////"
 		, "http://www.site1.com:1234/folder1/folder2"
 	}
+	, Data{ "http://www.site1.com:1234/folder1/", "/", "http://www.site1.com:1234" }	//to fix
 	, Data{ "http://www.site1.com:1234/", "./", "http://www.site1.com:1234" }
 	, Data{ "http://www.site1.com:1234/folder1/", "./", "http://www.site1.com:1234/folder1" }
 	, Data{ "http://www.site1.com:1234/", "../", "http://www.site1.com:1234" }
 	, Data{ "http://www.site1.com:1234/", "//", "http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/folder1/", "../", "http://www.site1.com:1234" }	//to fix
+	, Data{ "http://www.site1.com:1234/folder1/", "../", "http://www.site1.com:1234" }	
 ));//; //if used without gmock, add: ,)
 
 

@@ -35,68 +35,126 @@ class FakeCrawlerRun
 //};
 //
 
-//class MyCrawlerRun
-//{
-//private:
-//	ICrawlerRun& cr;
-//public:
-//	MyCrawlerRun(ICrawlerRun& cr) : cr{ cr } {}	//ctr
-//	string get_html(string str) {
-//		return cr.get_html(str); 
-//	}
-//	void print() {
-//
-//		cr.print();
-//	}
-//};
-//
-
-
-class MockCrawlerRun : public CrawlerRun //, ICrawlerRun
+class MyCrawlerRun : public CrawlerRun
 {
-public:
-	//MockCrawlerRun() = default;
-	// 0 means no argoments
-	//MOCK_METHOD0(print, void () );	// 0 means no argoments
-	//MOCK_METHOD0(to_string, void ());
-	MOCK_METHOD1(get_html, string (const string& uri));
-	//MOCK_METHOD1(write_to_file, void (const string& file_address_name));
-	///MOCK_METHOD2(crawler, void (const std::string& uri, size_t level));
-	//MOCK_METHOD3(search_for_links, void (GumboNode* node, const std::string& uri, const size_t& level));
+
+public:	//protected methods from class CrawlerRun
+	MyCrawlerRun () = default;
+	void init(const std::string begin_address, size_t crawler_levels) 
+	{
+		CrawlerRun::init(begin_address, crawler_levels);
+	}
+	std::string get_html(const std::string& uri)
+	{
+		return CrawlerRun::get_html(uri);
+	}
+	void search_for_links(GumboNode* node, const std::string& uri, const size_t& level) 
+	{
+		CrawlerRun::search_for_links(node, uri, level);
+	}
+	void crawler(const std::string& uri, size_t level)
+	{
+		CrawlerRun::crawler(uri, level);
+	}
 };
 
 
 
-TEST(TrueTest243534534, NoNameMethodTest_EnteredTrueScenario_ExpectedGetTrue234534) 
+class MockCrawlerRun : public MyCrawlerRun //, ICrawlerRun
 {
+public:
+	MOCK_METHOD1(get_html, string (const string& uri));
+};
 
+#include <string>
+
+TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+{
 	MockCrawlerRun mock_cr;
-	//MyCrawlerRun my_cr(mock_cr);
 
-	ON_CALL(mock_cr, get_html("")).WillByDefault(Return("46456"));
+	const auto mock_string =
+		R"V0G0N(
+			<!doctype><html><head></head><body>
+				<h1> Title <h1>
+				<img src="image1.jpg">
+			</body></html>
+		)V0G0N";
 
+	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
 
-	/*
+	mock_cr.init("", 1);
+
+	auto assume = mock_cr.to_string();
+	string result = R"({"results":[{"depth":1,"imageUrl":"image1.jpg","sourceUrl":""}]})";
 	
-	Return(
-	R"V0G0N(
-<!doctype><html><head></head><body>
-	<h1> Title <h1>
-	<img src="image1.jpg">
-	<img src="./image2.jpg">
-	<img src="../image2.jpg">
-	<a href="./link1">click1</a>
-</body></html>
-			)V0G0N"
-	)
-	
-	*/
-	auto assume = mock_cr.get_html("");
-	string result = "46456";
-
-	mock_cr.print();
+	//also starts with {
+	EXPECT_EQ(assume, result);
+}
 
 
+
+
+
+
+
+
+TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
+{
+	MockCrawlerRun mock_cr;
+
+	const auto mock_string_level1 =
+		R"V0G0N(
+		<!doctype><html><head></head><body>
+			<h1> Title 1 <h1>
+			<img src="image1.jpg">
+			<img src="./image2.jpg">
+			<img src="../image3.jpg">
+			<a href="./link_level2">click1</a>
+		</body></html>
+	)V0G0N";
+
+
+	const auto mock_string_level2 =
+		R"V0G0N(
+		<!doctype><html><head></head><body>
+			<h1> Title 2 <h1>
+			<img src="image4.jpg">
+		</body></html>
+	)V0G0N";
+
+	EXPECT_CALL(mock_cr, get_html(_)).Times(AtLeast(1)).WillOnce(Return(mock_string_level1)).WillOnce(Return(mock_string_level2));
+
+	mock_cr.init("http://someaddress.com/folder1/", 2);
+
+	auto assume = mock_cr.to_string();
+	string result = R"({"results":[{"depth":1,"imageUrl":"http://someaddress.com/folder1/image1.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":1,"imageUrl":"http://someaddress.com/folder1/image2.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":1,"imageUrl":"http://someaddress.com/image3.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":2,"imageUrl":"http://someaddress.com/folder1/link_level2/image4.jpg","sourceUrl":"http://someaddress.com/folder1/link_level2"}]})";
+
+	//also starts with {
+	EXPECT_EQ(assume, result);
+}
+
+
+
+
+
+
+TEST(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
+{
+	MockCrawlerRun mock_cr;
+
+	const auto mock_string =
+		R"V0G0N(
+			<!doctype><html><head></head><body>
+				<h1> Title <h1>
+			</body></html>
+		)V0G0N";
+
+	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
+
+	mock_cr.init("", 1);
+
+	auto assume = mock_cr.to_string();
+	string result = R"(null)";	//to fix and get results":[]}
 
 	EXPECT_EQ(assume, result);
 }
