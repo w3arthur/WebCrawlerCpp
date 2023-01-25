@@ -33,9 +33,11 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="Accessories.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Accessories.cpp" />
     <ClCompile Include="AddressCombinerTest.cpp" />
     <ClCompile Include="CrawlerRunTest.cpp" />
     <ClCompile Include="TrueTest.cpp" />

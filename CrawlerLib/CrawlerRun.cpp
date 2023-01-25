@@ -41,6 +41,11 @@ CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
     init(begin_address, crawler_levels);
 }
 
+void CrawlerRun::setTimeLimit(size_t timeLimit)
+{
+    this->timeLimit = timeLimit;
+}
+
 void CrawlerRun::print() const
 {
     //json j_list;

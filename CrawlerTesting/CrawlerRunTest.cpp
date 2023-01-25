@@ -1,14 +1,12 @@
 #include "pch.h"
 //#include <ICrawlerRun.h>
 #include <CrawlerRun.h>
-#include <thread>
-#include <chrono>
+#include "Accessories.h"
 
 
 //https://stackoverflow.com/questions/60486110/how-to-use-googlemock-in-visual-studio
 //#include "gmock/gmock.h"
 #pragma warning(disable:4996)
-
 
 using ::testing::AtLeast;
 using ::testing::Return;
@@ -20,13 +18,12 @@ using ::testing::DoAll;
 
 
 	//will not use
-//class FakeCrawlerRun : public ICrawlerRun
+//class FakeCrawlerRun : public CrawlerRun
 //{
 //private:
 //	ICrawlerRun* cr;
 //public:
-//	FakeCrawlerRun(const std::string& begin_address, size_t crawler_levels)
-//		: cr{ new CrawlerRun(begin_address, crawler_levels) } { }
+//	FakeCrawlerRun(): cr{ new CrawlerRun() } { }
 //	~FakeCrawlerRun() { delete cr; }
 //};
 
@@ -34,15 +31,16 @@ using ::testing::DoAll;
 
 class MyCrawlerRun : public CrawlerRun //, public ICrawlerRun
 {
+//	ICrawlerRun* cr;
 public:	//protected methods from class CrawlerRun
-	MyCrawlerRun () = default;
+	MyCrawlerRun() = default;
 	void init(const std::string& begin_address, size_t crawler_levels) 
 	{
 		CrawlerRun::init(begin_address, crawler_levels);
 	}
 	std::string get_html(const std::string& uri)
 	{
-		return CrawlerRun::get_html(uri);
+		return "<Will Override Inside Mock>";
 	}
 	void search_for_links(GumboNode* node, const std::string& uri, const size_t& level) 
 	{
@@ -57,53 +55,53 @@ public:	//protected methods from class CrawlerRun
 
 
 
-class MockCrawlerRun : public MyCrawlerRun //, public ICrawlerRun
+class MockCrawlerRun : public MyCrawlerRun
 {
 public:
 	MOCK_METHOD1(get_html, std::string (const std::string& uri));
+	//MOCK_METHOD(std::string, get_html, (const std::string& uri), (override)); // ot(const, override)
 };
 
 
-const char* mock_string{
-		R"V0G0N(
+
+class CrawlerRunMockTest: public ::testing::Test
+{
+public:
+	MockCrawlerRun mock_cr;
+
+	const string mock_string{ R"V0G0N(
 			<!doctype><html><head></head><body>
 				<h1> Title <h1>
 				<img src="image1.jpg">
 			</body></html>
 		)V0G0N" };
-
-
-TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
-{
-	MockCrawlerRun mock_cr;
-
-	//const auto mock_string =
-	//	R"V0G0N(
-	//		<!doctype><html><head></head><body>
-	//			<h1> Title <h1>
-	//			<img src="image1.jpg">
-	//		</body></html>
-	//	)V0G0N";
-
-	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
-
-	mock_cr.init("", 1);
-
-	auto assume = mock_cr.to_string();
-	string result = R"({"results":[{"depth":1,"imageUrl":"image1.jpg","sourceUrl":""}]})";
+	const string mock_address{ "http://someaddress.com/folder1/" };
+	const string mock_result{ R"({"results":[{"depth":1,"imageUrl":"image1.jpg","sourceUrl":"http://someaddress.com/folder1"}]})" };
+	const string mockFileName{ "test_case.json" };
 	
-	//also starts with {
+	void initMock(size_t levels) { mock_cr.init("", 1); }
+	string& printMock() { return mock_cr.to_string(); }
+	void writeMockToFile(const string& file_address_name) { empti_the_file(file_address_name); mock_cr.write_to_file(file_address_name); }
+	MockCrawlerRun& getMockCrawlerRun() { return mock_cr; }
+	void SetUp() {}
+	void TearDown() { }
+};
+
+
+TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+{
+
+	ON_CALL(getMockCrawlerRun(), get_html(_)).WillByDefault(Return(mock_string));
+	initMock(1);	//levels 1
+	auto assume{ printMock() };
+	auto result{ mock_result };
 	EXPECT_EQ(assume, result);
 }
 
 
 
-
-
-TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
+TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
 {
-	MockCrawlerRun mock_cr;
-
 	const auto mock_string_level1 =
 		R"V0G0N(
 		<!doctype><html><head></head><body>
@@ -115,7 +113,6 @@ TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectT
 		</body></html>
 	)V0G0N";
 
-
 	const auto mock_string_level2 =
 		R"V0G0N(
 		<!doctype><html><head></head><body>
@@ -124,11 +121,14 @@ TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectT
 		</body></html>
 	)V0G0N";
 
-	EXPECT_CALL(mock_cr, get_html(_)).Times(AtLeast(1)).WillOnce(Return(mock_string_level1)).WillOnce(Return(mock_string_level2));
+	EXPECT_CALL(getMockCrawlerRun(), get_html(_)).Times(AtLeast(1))
+		.WillOnce(Return(mock_string_level1))
+		.WillOnce(Return(mock_string_level2));
 
-	mock_cr.init("http://someaddress.com/folder1/", 2);
+	initMock(2); //levels 2
 
-	auto assume = mock_cr.to_string();
+	auto assume = printMock();
+
 	string result = R"({"results":[{"depth":1,"imageUrl":"http://someaddress.com/folder1/image1.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":1,"imageUrl":"http://someaddress.com/folder1/image2.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":1,"imageUrl":"http://someaddress.com/image3.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":2,"imageUrl":"http://someaddress.com/folder1/link_level2/image4.jpg","sourceUrl":"http://someaddress.com/folder1/link_level2"}]})";
 
 	//also starts with {
@@ -137,107 +137,53 @@ TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectT
 
 
 
-void empti_the_file(const std::string& file_name) 
+TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
 {
-	std::ofstream MyFile(file_name);
-	MyFile << "";
-	MyFile.close();
-}
-
-string read_from_file(const std::string& file_name)
-{
-	std::string buffer;
-	std::ifstream MyFile;
-	MyFile.open(file_name);
-	if (!MyFile.is_open()) return "READING FILE ISSUE";
-	MyFile.seekg(0, std::ios::end);
-	buffer.resize(MyFile.tellg());
-	MyFile.seekg(0, std::ios::beg);
-	MyFile.read(&buffer[0], buffer.size());
-	MyFile.close();
-	return buffer;
-}
-
-
-TEST(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
-{
-	MockCrawlerRun mock_cr;
-
-	//const auto mock_string =
-	//	R"V0G0N(
-	//		<!doctype><html><head></head><body>
-	//			<h1> Title <h1>
-	//			<img src="image1.jpg">
-	//		</body></html>
-	//	)V0G0N";
-
 	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
+	initMock(1);	//levels 1
+	writeMockToFile(mockFileName);
 
-	mock_cr.init("", 1);
-	const auto file_name = "test_case.json";
-
-	//empti the file
-	empti_the_file(file_name);
-
-
-	mock_cr.write_to_file(file_name);
-
-	auto assume = mock_cr.to_string();
-	auto result = read_from_file(file_name);
-
+	auto assume{ read_from_file(mockFileName) };
+	string result{ mock_result };
 
 	//also starts with {
 	EXPECT_EQ(assume, result);
 
-	//empti the file
-	empti_the_file(file_name);
+	empti_the_file(mockFileName);//empti the file
 }
 
 
 
 
-
-TEST(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
 	auto startTime{ std::chrono::high_resolution_clock::now() };
 
-	MockCrawlerRun mock_cr;
+	ON_CALL(getMockCrawlerRun(), get_html(_)).WillByDefault(Return(mock_string));
 
-	//const auto mock_string =
-	//	R"V0G0N(
-	//		<!doctype><html><head></head><body>
-	//			<h1> Title <h1>
-	//			<img src="image1.jpg">
-	//		</body></html>
-	//	)V0G0N";
-
-	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
-
-	const auto dont_care_file_name = "dont_care_test_case.json";
-	mock_cr.init("", 1);
-	auto to_string = mock_cr.to_string();
-	mock_cr.write_to_file(dont_care_file_name);
-
+	initMock( 1);	//levels 1
+	printMock();	//just for running
+	writeMockToFile(mockFileName);
+	
 	auto stopTime{ std::chrono::high_resolution_clock::now()};
 
 	auto duration{ std::chrono::duration_cast<std::chrono::milliseconds> (stopTime - startTime) };
 
 
-	long long assumeMilliSec = 100;
-	auto resultMilliSec = duration.count();
+	long long assumeMilliSec{ 100 };
+	auto resultMilliSec{ duration.count() };
 
 	//also starts with {
 	EXPECT_GE(assumeMilliSec, resultMilliSec);
+	empti_the_file(mockFileName);//empti the file
 }
 
 
 
 
 
-TEST(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
+TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
 {
-	MockCrawlerRun mock_cr;
-
 	const auto mock_string_no_image =
 		R"V0G0N(
 			<!doctype><html><head></head><body>
@@ -245,11 +191,9 @@ TEST(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnR
 			</body></html>
 		)V0G0N";
 
-	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string_no_image));
-
-	mock_cr.init("", 1);
-
-	auto assume = mock_cr.to_string();
+	ON_CALL(getMockCrawlerRun(), get_html(_)).WillByDefault(Return(mock_string_no_image));
+	initMock(1);//levels 1
+	auto assume = printMock();
 	string result = R"(null)";	//to fix and get results":[]}
 
 	EXPECT_EQ(assume, result);
