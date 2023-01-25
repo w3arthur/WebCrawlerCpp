@@ -1,6 +1,9 @@
 #include "pch.h"
 //#include <ICrawlerRun.h>
 #include <CrawlerRun.h>
+#include <thread>
+#include <chrono>
+
 
 //https://stackoverflow.com/questions/60486110/how-to-use-googlemock-in-visual-studio
 //#include "gmock/gmock.h"
@@ -37,7 +40,6 @@ class FakeCrawlerRun
 
 class MyCrawlerRun : public CrawlerRun
 {
-
 public:	//protected methods from class CrawlerRun
 	MyCrawlerRun () = default;
 	void init(const std::string begin_address, size_t crawler_levels) 
@@ -56,6 +58,7 @@ public:	//protected methods from class CrawlerRun
 	{
 		CrawlerRun::crawler(uri, level);
 	}
+
 };
 
 
@@ -66,19 +69,27 @@ public:
 	MOCK_METHOD1(get_html, string (const string& uri));
 };
 
-#include <string>
 
-TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
-{
-	MockCrawlerRun mock_cr;
-
-	const auto mock_string =
+const char* mock_string{
 		R"V0G0N(
 			<!doctype><html><head></head><body>
 				<h1> Title <h1>
 				<img src="image1.jpg">
 			</body></html>
-		)V0G0N";
+		)V0G0N" };
+
+
+TEST(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+{
+	MockCrawlerRun mock_cr;
+
+	//const auto mock_string =
+	//	R"V0G0N(
+	//		<!doctype><html><head></head><body>
+	//			<h1> Title <h1>
+	//			<img src="image1.jpg">
+	//		</body></html>
+	//	)V0G0N";
 
 	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
 
@@ -158,13 +169,13 @@ TEST(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnly
 {
 	MockCrawlerRun mock_cr;
 
-	const auto mock_string =
-		R"V0G0N(
-			<!doctype><html><head></head><body>
-				<h1> Title <h1>
-				<img src="image1.jpg">
-			</body></html>
-		)V0G0N";
+	//const auto mock_string =
+	//	R"V0G0N(
+	//		<!doctype><html><head></head><body>
+	//			<h1> Title <h1>
+	//			<img src="image1.jpg">
+	//		</body></html>
+	//	)V0G0N";
 
 	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
 
@@ -192,18 +203,55 @@ TEST(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnly
 
 
 
+TEST(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+{
+	auto startTime{ std::chrono::high_resolution_clock::now() };
+
+	MockCrawlerRun mock_cr;
+
+	//const auto mock_string =
+	//	R"V0G0N(
+	//		<!doctype><html><head></head><body>
+	//			<h1> Title <h1>
+	//			<img src="image1.jpg">
+	//		</body></html>
+	//	)V0G0N";
+
+	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
+
+	const auto dont_care_file_name = "dont_care_test_case.json";
+	mock_cr.init("", 1);
+	auto to_string = mock_cr.to_string();
+	mock_cr.write_to_file(dont_care_file_name);
+
+	auto stopTime{ std::chrono::high_resolution_clock::now()};
+
+	auto duration{ std::chrono::duration_cast<std::chrono::milliseconds> (stopTime - startTime) };
+
+
+	long long assumeMilliSec = 100;
+	auto resultMilliSec = duration.count();
+
+	//also starts with {
+	EXPECT_GE(assumeMilliSec, resultMilliSec);
+}
+
+
+
+
+
 TEST(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
 {
 	MockCrawlerRun mock_cr;
 
-	const auto mock_string =
+	const auto mock_string_no_image =
 		R"V0G0N(
 			<!doctype><html><head></head><body>
 				<h1> Title <h1>
 			</body></html>
 		)V0G0N";
 
-	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string));
+	ON_CALL(mock_cr, get_html(_)).WillByDefault(Return(mock_string_no_image));
 
 	mock_cr.init("", 1);
 
