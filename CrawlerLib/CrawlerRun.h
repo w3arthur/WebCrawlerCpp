@@ -10,6 +10,11 @@ class CrawlerRun : public ICrawlerRun
     //string begin_address;
     //size_t crawler_levels;
 private:
+    size_t timeLimit{100};   //to set
+public:
+    void setTimeLimit(size_t timeLimit) { this->timeLimit = timeLimit; }   //to set
+
+private:
     std::mutex visitedUri_m;
     std::set<std::string> visitedUri;
 
