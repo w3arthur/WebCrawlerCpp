@@ -1,0 +1,30 @@
+
+string htmlBuffer{ "" };
+
+size_t got_data(char* buffer, size_t itemsize, size_t nitems, void* ignorethis)
+{
+    size_t bytes = itemsize * nitems;
+    cout << "chunk size " << bytes << endl;
+    /* print each line, numbering example */
+    
+    for (int i{}; i < bytes; ++i) { htmlBuffer += buffer[i]; }
+    return bytes;
+}
+
+const string& getHtml(const char* address) 
+{
+    CURL* curl = curl_easy_init();
+    if (!curl) { cout << "init failed" << endl; return "fail"; }    //to fix
+    curl_easy_setopt(curl, CURLOPT_URL, address);   //cstr
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, got_data);
+    string response;
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    CURLcode result = curl_easy_perform(curl); //download the content
+    if (result != CURLE_OK) cout << "download problem" << endl;
+
+
+    cout << "\nok" << endl;
+    curl_easy_cleanup(curl);
+    return htmlBuffer;
+}
+
