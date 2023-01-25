@@ -34,7 +34,6 @@ string combiner(string uri1, string uri2)
         trim(uri2);
         while (!uri1.empty() && uri1.back() == '/') uri1.pop_back();
         while (!uri2.empty() && uri2.back() == '/')  uri2.pop_back();
-        
 
         while (!uri2.empty() && uri2.size() > 2)   //not enooght for a break condition!
         {
@@ -63,24 +62,16 @@ string combiner(string uri1, string uri2)
             }
             // stupied cases when starts with ////////////////// for uri1 and 2
             //else if (sub1Char == " ") { uri2 = "%20" + uri2.substr(1); }  //future fixes for URI address
-
-
             else break; //no other cases awailable
         }
 
 
-        if (!uri2.empty() && uri2.size() > 1 && uri2.substr(0, 2) == "..")
-        {
+        if (!uri2.empty() && uri2.size() == 2 && uri2.substr(0, 2) == "..")
             dotDotSlashCase(uri1, uri2);
-        }
-        else if (!uri2.empty() && uri2.size() > 0 && uri2.substr(0, 1) == ".")
-        {
+        else if (!uri2.empty() && uri2.size() == 1 && uri2.substr(0, 1) == ".")
             uri2 = uri2.substr(1);
-        }
-        else if (!uri2.empty() && uri2.size() > 0 && uri2.substr(0, 1) == "/")
-        {
+        else if (!uri2.empty() && uri2.size() == 1 && uri2.substr(0, 1) == "/")
             slashCase(uri1, uri2);
-        }
 
         //combined rule, adding a '/' betwin uri1/uri2
         if (!uri1.empty() && !uri2.empty() && uri1.back() != '/' && uri2.front() != '/') uri1 += '/';

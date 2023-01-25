@@ -1,4 +1,6 @@
 #include "pch.h"
+
+
 using ::testing::AddGlobalTestEnvironment;
 using ::testing::Bool;
 using ::testing::Combine;
@@ -168,15 +170,15 @@ TEST_P(CombineAddressTest, ExternalGenerator)
 
 INSTANTIATE_TEST_CASE_P(AddressCombinerTestAllUnExpectedValueTests, CombineAddressTest, ::testing::Values(
 	Data{
-		"http://www.site1.com:1234/folder1//////////////" , "folder2////////////"
-		, "http://www.site1.com:1234/folder1/folder2" 
-		}
-	, Data{ "http://www.site1.com:1234/","./","http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/folder1/","./","http://www.site1.com:1234/folder1" }
-	, Data{ "http://www.site1.com:1234/","../","http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/","//","http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/folder1/","../","http://www.site1.com:1234" }	//to fix
-), );
+		"http://www.site1.com:1234/folder1//////////////", "folder2////////////"
+		, "http://www.site1.com:1234/folder1/folder2"
+	}
+	, Data{ "http://www.site1.com:1234/", "./", "http://www.site1.com:1234" }
+	, Data{ "http://www.site1.com:1234/folder1/", "./", "http://www.site1.com:1234/folder1" }
+	, Data{ "http://www.site1.com:1234/", "../", "http://www.site1.com:1234" }
+	, Data{ "http://www.site1.com:1234/", "//", "http://www.site1.com:1234" }
+	, Data{ "http://www.site1.com:1234/folder1/", "../", "http://www.site1.com:1234" }	//to fix
+));//; //if used without gmock, add: ,)
 
 
 

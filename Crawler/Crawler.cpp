@@ -13,7 +13,7 @@ using std::cout;
 using std::endl;
 
 // make the testing
-// to do, to recheck curl package for x64, with DLL from VCPKG or from them site
+// to do, to recheck 'curl' package for x64, with DLL from VCPKG or from them site
 // create task time limit to compile, like an exit token
 
 
@@ -24,22 +24,21 @@ int main(int argc, char* argv[])
     size_t limitLevels{ 3 };
 
     std::string uri1{ "https://arthurcam.com" };
+    ICrawlerRun* crowlerRun = new CrawlerRun(uri1, limitLevels) ;
 
-    CrawlerRun crowlerRun(uri1, limitLevels);
-
-    crowlerRun.write_to_file("result.json");
+    crowlerRun->write_to_file("result.json");
 
 
     cout << "\n\n\nImages HERE:\n";
-    crowlerRun.print();
+    crowlerRun->print();
 
     cout << "\n\n" << endl;
 
-    auto returnString{ crowlerRun.to_string() };
+    auto returnString{ crowlerRun->to_string() };
    // cout << returnString << endl;
     cout << "\n\n" <<endl; //crashed!
 
-
+    delete crowlerRun;
 
 
     //if (argc != 2)

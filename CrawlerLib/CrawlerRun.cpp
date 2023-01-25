@@ -3,7 +3,7 @@
 
 
 
-#include <fstream>
+//#include <fstream>
 
 //constructor
 CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
@@ -24,11 +24,11 @@ CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
     }
 }
 
-//public
-void CrawlerRun::print()
+void CrawlerRun::print() const
 {
     //json j_list;
     //j_list["results"] = {};
+    std::cout << "all images data:\n";
     for (const auto& el : images)
     {
         // j_list["results"].emplace_back(el.to_json());
@@ -36,7 +36,7 @@ void CrawlerRun::print()
     }
 }
 
-void CrawlerRun::write_to_file(const string& file_address_name)
+void CrawlerRun::write_to_file(const string& file_address_name) const
 {
     std::ofstream MyFile(file_address_name);
     MyFile << json_images;
@@ -51,7 +51,11 @@ string CrawlerRun::to_string() const
 }
 
 
-//private
+string CrawlerRun::get_html(const string& uri)
+{
+    return getHtml(uri);
+}
+
 
 void CrawlerRun::crawler(const string& uri, size_t level)
 {
@@ -66,7 +70,7 @@ void CrawlerRun::crawler(const string& uri, size_t level)
         visitedUri.insert(uri);
         visitedUri_m.unlock();
     }
-    string contents = getHtml(uri);
+    string contents = get_html(uri);
     GumboOutput* output = gumbo_parse(contents.c_str());
     search_for_links(output->root, uri, level);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
