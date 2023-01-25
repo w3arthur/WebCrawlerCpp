@@ -49,6 +49,7 @@ using ::testing::DoAll;
 //	~FakeCrawlerRun() { delete cr; }
 //};
 
+//find a way to fix the test with interface
 
 
 class MyCrawlerRun : public CrawlerRun //, public ICrawlerRun
