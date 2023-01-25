@@ -1,7 +1,29 @@
 #include "pch.h"
 //#include <ICrawlerRun.h>
 #include <CrawlerRun.h>
-#include "Accessories.h"
+
+
+void empti_the_file(const std::string& file_name)
+{
+	std::ofstream MyFile(file_name);
+	MyFile << "";
+	MyFile.close();
+}
+
+string read_from_file(const std::string& file_name)
+{
+	std::string buffer;
+	std::ifstream MyFile;
+	MyFile.open(file_name);
+	if (!MyFile.is_open()) return "READING FILE ISSUE";
+	MyFile.seekg(0, std::ios::end);
+	buffer.resize(MyFile.tellg());
+	MyFile.seekg(0, std::ios::beg);
+	MyFile.read(&buffer[0], buffer.size());
+	MyFile.close();
+	return buffer;
+}
+
 
 
 //https://stackoverflow.com/questions/60486110/how-to-use-googlemock-in-visual-studio
@@ -76,11 +98,11 @@ public:
 			</body></html>
 		)V0G0N" };
 	const string mock_address{ "http://someaddress.com/folder1/" };
-	const string mock_result{ R"({"results":[{"depth":1,"imageUrl":"image1.jpg","sourceUrl":"http://someaddress.com/folder1"}]})" };
+	const string mock_result{ R"({"results":[{"depth":1,"imageUrl":"http://someaddress.com/folder1/image1.jpg","sourceUrl":"http://someaddress.com/folder1/"}]})" };
 	const string mockFileName{ "test_case.json" };
 	
-	void initMock(size_t levels) { mock_cr.init("", 1); }
-	string& printMock() { return mock_cr.to_string(); }
+	void initMock(size_t levels) { mock_cr.init(mock_address, levels); }
+	string printMock() { return mock_cr.to_string(); }
 	void writeMockToFile(const string& file_address_name) { empti_the_file(file_address_name); mock_cr.write_to_file(file_address_name); }
 	MockCrawlerRun& getMockCrawlerRun() { return mock_cr; }
 	void SetUp() {}
