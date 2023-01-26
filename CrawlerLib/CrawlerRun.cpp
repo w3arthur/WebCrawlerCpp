@@ -38,6 +38,7 @@ void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
 
 CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
 {
+    html_request = new HtmlRequest();
     init(begin_address, crawler_levels);
 }
 
@@ -74,11 +75,6 @@ string CrawlerRun::to_string() const
 } 
 
 
-string CrawlerRun::get_html(const string& uri)
-{
-    return getHtml(uri);
-}
-
 
 void CrawlerRun::crawler(const string& uri, size_t level)
 {
@@ -93,7 +89,7 @@ void CrawlerRun::crawler(const string& uri, size_t level)
         visitedUri.insert(uri);
         visitedUri_m.unlock();
     }
-    string contents = get_html(uri);
+    string contents = html_request->getHtml(uri);
     GumboOutput* output = gumbo_parse(contents.c_str());
     search_for_links(output->root, uri, level);
     gumbo_destroy_output(&kGumboDefaultOptions, output);

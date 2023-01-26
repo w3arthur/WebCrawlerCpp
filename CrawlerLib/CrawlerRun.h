@@ -2,11 +2,15 @@
 
 #include "Image.h"  //#include
 #include "ICrawlerRun.h"
+#include "IHtmlRequest.h"
 //#include <set>
 //#include <gumbo-query/gumbo.h>  // included
 
 class CrawlerRun : public ICrawlerRun
 {
+protected:  //resurce for testing
+    IHtmlRequest* html_request;   //will set in constructore
+    void setHtmlRequest(IHtmlRequest* html_request) { this->html_request = html_request; }
 private:
     string begin_address{ "" };
     size_t crawler_levels{ 0 };
@@ -38,9 +42,9 @@ public:
 
 public:  //mock testing
     explicit CrawlerRun() = default;
+    ~CrawlerRun() { delete html_request; }
 protected: //set as protected!, rty to delete virtual
     void init(const std::string& begin_address, size_t crawler_levels);
-    string get_html(const string& uri);
     void search_for_links(GumboNode* node, const std::string& uri, const size_t& level);
     void crawler(const std::string& uri, size_t level) ; //run on thread
 };
