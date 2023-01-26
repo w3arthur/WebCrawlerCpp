@@ -1,37 +1,54 @@
 #pragma once
 
+//https://github.com/google/googletest/blob/main/docs/gmock_cook_book.md#knowing-when-to-expect
+
 #include "MyCrawlerRun.h"//#include <CrawlerRun.h> //#include <IHtmlRequest.h>
 #include "Utils.h"
+
+class MockHtmlRequest : public IHtmlRequest
+{
+public:
+	MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
+	//MOCK_METHOD1(getHtml, std::string(const std::string uri));
+};
 
 
 class CrawlerRunMockTest : public ::testing::Test
 {
-private:
+public:
 	MyCrawlerRun* mock_cr;
-	IHtmlRequest* mockhtml;
-
+	std::shared_ptr<IHtmlRequest> mockhtml;
+	
 private:
-	class MockHtmlRequest : public IHtmlRequest
+
+
+	//::testing::NiceMock<MockHtmlRequest> mockhtml2;
+
+
+public:
+	MockHtmlRequest& getMockHtmlRequest() 
 	{
-	public:
-		MOCK_METHOD1(getHtml, std::string(const std::string uri));
-	};
+		auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
+		MockHtmlRequest* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
+		return *p_mockHtmlRequest;
+	}
 
 public:
 	void SetUp()
 	{
 		mock_cr = new MyCrawlerRun();
-		mockhtml = new MockHtmlRequest();
+		mockhtml = std::make_shared<MockHtmlRequest>();
 		mock_cr->setHtmlRequest(mockhtml);
+		
 	}
 
 	void TearDown()
 	{
 		delete mock_cr;
+		
 	} // delete mockhtml will done inside mock_cr
 
-public:
-	MockHtmlRequest& getMockHtmlRequest() { return dynamic_cast<MockHtmlRequest&>(*mockhtml); }
+
 
 public:
 	void initMock(size_t levels);

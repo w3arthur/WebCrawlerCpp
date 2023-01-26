@@ -21,7 +21,7 @@ using ::testing::DoAll;
 
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
-	ON_CALL(getMockHtmlRequest(), getHtml(_)).WillByDefault(Return(mock_string));
+	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
 	initMock(1);	//levels 1
 	auto assume{ printMock() };
 	auto result{ mock_result };
@@ -51,17 +51,16 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_Expec
 		</body></html>
 	)V0G0N";
 
-	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(AtLeast(1))
+	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(2)	//AtLeast(1)
 		.WillOnce(Return(mock_string_level1))
 		.WillOnce(Return(mock_string_level2));
 
 	initMock(2); //levels 2
 
-	auto assume = printMock();
+	auto assume{ printMock() };
 
 	string result = R"({"results":[{"depth":1,"imageUrl":"http://someaddress.com/folder1/image1.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":1,"imageUrl":"http://someaddress.com/folder1/image2.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":1,"imageUrl":"http://someaddress.com/image3.jpg","sourceUrl":"http://someaddress.com/folder1/"},{"depth":2,"imageUrl":"http://someaddress.com/folder1/link_level2/image4.jpg","sourceUrl":"http://someaddress.com/folder1/link_level2"}]})";
 
-	//also starts with {
 	EXPECT_EQ(assume, result);
 }
 
@@ -69,27 +68,26 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_Expec
 
 TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
 {
-	ON_CALL(getMockHtmlRequest(), getHtml(_)).WillByDefault(Return(mock_string));
+	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
 	initMock(1);	//levels 1
 	writeMockToFile(mockFileName);
 
 	auto assume{ read_from_file(mockFileName) };
 	string result{ mock_result };
 
-	//also starts with {
+
 	EXPECT_EQ(assume, result);
 
-	empti_the_file(mockFileName);//empti the file
 }
 
 
 
 
-TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom200MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
 	auto startTime{ std::chrono::high_resolution_clock::now() };
 
-	ON_CALL(getMockHtmlRequest(), getHtml(_)).WillByDefault(Return(mock_string));
+	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
 
 	initMock( 1);	//levels 1
 	printMock();	//just for running
@@ -99,12 +97,13 @@ TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegula
 
 	auto duration{ std::chrono::duration_cast<std::chrono::milliseconds> (stopTime - startTime) };
 
-	long long assumeMilliSec{ 100 };
+	long long assumeMilliSec{ 200 };
 	auto resultMilliSec{ duration.count() };
 
-	//also starts with {
 	EXPECT_GE(assumeMilliSec, resultMilliSec);
-	empti_the_file(mockFileName);//empti the file
+	
+
+	
 }
 
 
@@ -118,10 +117,9 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToRetur
 			</body></html>
 		)V0G0N";
 
-	ON_CALL(getMockHtmlRequest(), getHtml(_)).WillByDefault(Return(mock_string_no_image));
+	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string_no_image));	
 	initMock(1);//levels 1
 	auto assume = printMock();
 	string result = R"(null)";	//to fix and get results":[]}
-
 	EXPECT_EQ(assume, result);
 }

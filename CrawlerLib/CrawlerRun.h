@@ -9,8 +9,8 @@
 class CrawlerRun : public ICrawlerRun
 {
 protected:  //resurce for testing
-    IHtmlRequest* html_request;   //will set in constructore
-    void setHtmlRequest(IHtmlRequest* html_request) { this->html_request = html_request; }
+    std::shared_ptr<IHtmlRequest> html_request;   //will set in constructore
+    void setHtmlRequest(std::shared_ptr<IHtmlRequest> html_request) { this->html_request = html_request; }
 private:
     string begin_address{ "" };
     size_t crawler_levels{ 0 };
@@ -34,7 +34,7 @@ private:
 
 public:
     explicit CrawlerRun(const std::string& begin_address, size_t crawler_levels);
-    ~CrawlerRun() { delete html_request; html_request = 0;  }
+    ~CrawlerRun() {/* delete html_request;*/ }
 public:
     void setTimeLimit(size_t timeLimit);  //to set
     void print() const;

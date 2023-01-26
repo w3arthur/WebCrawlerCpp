@@ -6,7 +6,7 @@
 class MyCrawlerRun : public CrawlerRun	//fake object too
 {
 public:	//all protected method set to public:
-	void setHtmlRequest(IHtmlRequest* html_request)
+	void setHtmlRequest(std::shared_ptr<IHtmlRequest> html_request)
 	{
 		CrawlerRun::setHtmlRequest(html_request);
 	}
