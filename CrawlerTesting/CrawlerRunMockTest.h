@@ -2,15 +2,11 @@
 
 //https://github.com/google/googletest/blob/main/docs/gmock_cook_book.md#knowing-when-to-expect
 
+
+	//::testing::NiceMock<MockHtmlRequest> mockhtml2; //try test with NiceMock
+
 #include "MyCrawlerRun.h"//#include <CrawlerRun.h> //#include <IHtmlRequest.h>
 #include "Utils.h"
-
-class MockHtmlRequest : public IHtmlRequest
-{
-public:
-	MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
-	//MOCK_METHOD1(getHtml, std::string(const std::string uri));
-};
 
 
 class CrawlerRunMockTest : public ::testing::Test
@@ -20,9 +16,13 @@ public:
 	std::shared_ptr<IHtmlRequest> mockhtml;
 	
 private:
+	class MockHtmlRequest : public IHtmlRequest
+	{
+	public:
+		MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
+		//MOCK_METHOD1(getHtml, std::string(const std::string uri));
+	};
 
-
-	//::testing::NiceMock<MockHtmlRequest> mockhtml2;
 
 
 public:
