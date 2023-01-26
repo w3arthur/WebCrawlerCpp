@@ -34,16 +34,15 @@ private:
 
 public:
     explicit CrawlerRun(const std::string& begin_address, size_t crawler_levels);
+    ~CrawlerRun() { delete html_request; html_request = 0;  }
 public:
     void setTimeLimit(size_t timeLimit);  //to set
     void print() const;
     void write_to_file(const std::string& file_address_name) const;
     std::string to_string() const;
 
-public:  //mock testing
-    explicit CrawlerRun() = default;
-    ~CrawlerRun() { delete html_request; }
 protected: //set as protected!, rty to delete virtual
+    explicit CrawlerRun() = default;
     void init(const std::string& begin_address, size_t crawler_levels);
     void search_for_links(GumboNode* node, const std::string& uri, const size_t& level);
     void crawler(const std::string& uri, size_t level) ; //run on thread
