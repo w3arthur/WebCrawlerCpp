@@ -2,35 +2,7 @@
 //#include <ICrawlerRun.h>
 #include <CrawlerRun.h>
 #include <IHtmlRequest.h>
-
-void empti_the_file(const std::string& file_name)
-{
-	std::ofstream MyFile(file_name);
-	MyFile << "";
-	MyFile.close();
-}
-
-string read_from_file(const std::string& file_name)
-{
-	std::string buffer;
-	std::ifstream MyFile;
-	MyFile.open(file_name);
-	if (!MyFile.is_open()) return "READING FILE ISSUE";
-	MyFile.seekg(0, std::ios::end);
-	buffer.resize(MyFile.tellg());
-	MyFile.seekg(0, std::ios::beg);
-	MyFile.read(&buffer[0], buffer.size());
-	MyFile.close();
-	return buffer;
-}
-
-
-
-
-
-
-
-
+#include "Utils.h"
 
 //https://stackoverflow.com/questions/60486110/how-to-use-googlemock-in-visual-studio
 //#include "gmock/gmock.h"
@@ -45,20 +17,6 @@ using ::testing::DoDefault;
 using ::testing::DoAll;
 
 
-	//will not use
-//class FakeCrawlerRun : public CrawlerRun
-//{
-//private:
-//	ICrawlerRun* cr;
-//public:
-//	FakeCrawlerRun(): cr{ new CrawlerRun() } { }
-//	~FakeCrawlerRun() { delete cr; }
-//};
-
-//find a way to fix the test with interface
-
-
-
 
 class MockHtmlRequest : public IHtmlRequest
 {
@@ -68,7 +26,22 @@ public:
 };
 
 
-class MyCrawlerRun : public CrawlerRun
+//class MyCrawlerRun : public ICrawlerRun		//all methods should be public
+//{
+//	ICrawlerRun* cr;
+//public:	//all protected method set to public:
+//	MyCrawlerRun() { cr = new CrawlerRun(); }
+//	~MyCrawlerRun() { delete cr; }
+//	//void setHtmlRequest(IHtmlRequest* html_request)
+//	//{
+//	//	cr->setHtmlRequest(html_request);
+//	///.....
+//};
+
+
+
+
+class MyCrawlerRun : public CrawlerRun	//fake one
 {
 public:	//all protected method set to public:
 	void setHtmlRequest(IHtmlRequest* html_request)
@@ -89,8 +62,6 @@ public:	//all protected method set to public:
 	}
 
 };
-
-
 
 
 
