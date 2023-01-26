@@ -1,11 +1,11 @@
 #include "pch.h"
-//#include <ICrawlerRun.h>
-#include <CrawlerRun.h>
-#include <IHtmlRequest.h>
-#include "Utils.h"
+//#include "gmock/gmock.h" //https://stackoverflow.com/questions/60486110/how-to-use-googlemock-in-visual-studio
+#include "CrawlerRunMockTest.h"	
+//#include "MockHtmlRequest" #include "MyCrawlerRun.h" #include <ICrawlerRun.h>  #include <CrawlerRun.h> 
+//#include "Utils.h"
 
-//https://stackoverflow.com/questions/60486110/how-to-use-googlemock-in-visual-studio
-//#include "gmock/gmock.h"
+
+
 #pragma warning(disable:4996)
 
 using ::testing::AtLeast;
@@ -17,95 +17,6 @@ using ::testing::DoDefault;
 using ::testing::DoAll;
 
 
-
-class MockHtmlRequest : public IHtmlRequest
-{
-public:
-	MOCK_METHOD1(getHtml, std::string(const std::string uri));
-
-};
-
-
-//class MyCrawlerRun : public ICrawlerRun		//all methods should be public
-//{
-//	ICrawlerRun* cr;
-//public:	//all protected method set to public:
-//	MyCrawlerRun() { cr = new CrawlerRun(); }
-//	~MyCrawlerRun() { delete cr; }
-//	//void setHtmlRequest(IHtmlRequest* html_request)
-//	//{
-//	//	cr->setHtmlRequest(html_request);
-//	///.....
-//};
-
-
-
-
-class MyCrawlerRun : public CrawlerRun	//fake object too
-{
-public:	//all protected method set to public:
-	void setHtmlRequest(IHtmlRequest* html_request)
-	{
-		CrawlerRun::setHtmlRequest(html_request);
-	}
-	void init(const std::string& begin_address, size_t crawler_levels)
-	{
-		CrawlerRun::init(begin_address, crawler_levels);
-	}
-	void search_for_links(GumboNode* node, const std::string& uri, const size_t& level)
-	{
-		CrawlerRun::search_for_links(node, uri, level);
-	}
-	void crawler(const std::string& uri, size_t level)
-	{
-		CrawlerRun::crawler(uri, level);
-	}
-
-};
-
-
-
-
-class CrawlerRunMockTest : public ::testing::Test
-{
-private:
-	MyCrawlerRun* mock_cr;
-	IHtmlRequest* mockhtml;
-
-public:
-	void SetUp()
-	{
-		mock_cr = new MyCrawlerRun();
-		mockhtml = new MockHtmlRequest();
-		mock_cr->setHtmlRequest(mockhtml);
-	}
-	void TearDown() { delete mock_cr; } // delete mockhtml will done inside mock_cr
-
-public:
-	MockHtmlRequest& getMockHtmlRequest() { return dynamic_cast<MockHtmlRequest&>(*mockhtml); } 
-
-public:
-	const string mock_string{ R"V0G0N(
-			<!doctype><html><head></head><body>
-				<h1> Title <h1>
-				<img src="image1.jpg">
-			</body></html>
-		)V0G0N" };
-	
-	const string mock_address{ "http://someaddress.com/folder1/" };
-
-	const string mock_result{ R"({"results":[{"depth":1,"imageUrl":"http://someaddress.com/folder1/image1.jpg","sourceUrl":"http://someaddress.com/folder1/"}]})" };
-
-	const string mockFileName{ "test_case.json" };
-
-public:
-	void initMock(size_t levels) { mock_cr->init(mock_address, levels); }
-
-	string printMock() { return mock_cr->to_string(); }
-
-	void writeMockToFile(const string& file_address_name) { empti_the_file(file_address_name); mock_cr->write_to_file(file_address_name); }
-
-};
 
 
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
@@ -188,7 +99,6 @@ TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegula
 
 	auto duration{ std::chrono::duration_cast<std::chrono::milliseconds> (stopTime - startTime) };
 
-
 	long long assumeMilliSec{ 100 };
 	auto resultMilliSec{ duration.count() };
 
@@ -196,8 +106,6 @@ TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom100MilliSecEnteredRegula
 	EXPECT_GE(assumeMilliSec, resultMilliSec);
 	empti_the_file(mockFileName);//empti the file
 }
-
-
 
 
 
