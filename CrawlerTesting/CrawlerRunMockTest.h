@@ -18,14 +18,14 @@ private:
 	};
 
 public:
-	void CrawlerRunMockTest::SetUp()
+	void SetUp()
 	{
 		mock_cr = new MyCrawlerRun();
 		mockhtml = new MockHtmlRequest();
 		mock_cr->setHtmlRequest(mockhtml);
 	}
 
-	void CrawlerRunMockTest::TearDown()
+	void TearDown()
 	{
 		delete mock_cr;
 	} // delete mockhtml will done inside mock_cr
