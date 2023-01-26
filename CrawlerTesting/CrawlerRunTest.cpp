@@ -41,7 +41,7 @@ public:
 
 
 
-class MyCrawlerRun : public CrawlerRun	//fake one
+class MyCrawlerRun : public CrawlerRun	//fake object too
 {
 public:	//all protected method set to public:
 	void setHtmlRequest(IHtmlRequest* html_request)
@@ -65,6 +65,7 @@ public:	//all protected method set to public:
 
 
 
+
 class CrawlerRunMockTest : public ::testing::Test
 {
 private:
@@ -81,7 +82,7 @@ public:
 	void TearDown() { delete mock_cr; } // delete mockhtml will done inside mock_cr
 
 public:
-	MockHtmlRequest& getMockHtmlRequest() { return dynamic_cast<MockHtmlRequest&>(*mockhtml); }
+	MockHtmlRequest& getMockHtmlRequest() { return dynamic_cast<MockHtmlRequest&>(*mockhtml); } 
 
 public:
 	const string mock_string{ R"V0G0N(

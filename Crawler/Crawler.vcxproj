@@ -158,9 +158,6 @@
     <ClCompile Include="Crawler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Curl_get data by line.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <CopyFileToFolders Include="result.json">
       <FileType>Document</FileType>
     </CopyFileToFolders>
