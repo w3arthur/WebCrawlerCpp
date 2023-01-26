@@ -71,10 +71,6 @@ public:
 class MyCrawlerRun : public CrawlerRun
 {
 public:	//all protected method set to public:
-	IHtmlRequest* getHtmlRequest() 
-	{
-		CrawlerRun::html_request;
-	}
 	void setHtmlRequest(IHtmlRequest* html_request)
 	{
 		CrawlerRun::setHtmlRequest(html_request);
@@ -95,16 +91,6 @@ public:	//all protected method set to public:
 };
 
 
-
-
-
-
-//class MockCrawlerRun : public MyCrawlerRun
-//{
-//public:
-//	MOCK_METHOD1(get_html, std::string (const std::string& uri));
-//	//MOCK_METHOD(std::string, get_html, (const std::string& uri), (override)); // ot(const, override)
-//};
 
 
 
