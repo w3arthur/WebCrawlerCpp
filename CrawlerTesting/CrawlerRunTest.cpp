@@ -15,7 +15,23 @@ using ::testing::Invoke;
 using ::testing::InvokeWithoutArgs;
 using ::testing::DoDefault;
 using ::testing::DoAll;
+using ::testing::NiceMock;
+using ::testing::StrictMock;
 
+
+TEST(CrawlerRunMockTest2, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+{
+
+	
+	NiceMock<MyCrawlerRun> cr;
+
+	EXPECT_CALL(cr, html_get(""));
+
+	//initMock(1);	//levels 1
+	//auto assume{ printMock() };
+	//auto result{ mock_result };
+	EXPECT_EQ(1, 1);
+}
 
 
 

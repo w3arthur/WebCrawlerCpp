@@ -22,5 +22,8 @@ public:	//all protected method set to public:
 	{
 		CrawlerRun::crawler(uri, level);
 	}
-
+	virtual string html_get(const string& uri) const
+	{
+		return CrawlerRun::html_get(uri);
+	}
 };
