@@ -19,166 +19,155 @@ using ::testing::ValuesIn;
 // improve string to string_view for better performance
 
 
-class Data
+struct CombinedAddressesData
 {
-public:
 	std::string primaryAddress, secondaryAddress, expectedResult;
 };
 
 
 class AddressCombinerTestClass: public ::testing::Test
 {
-	const std::string& primaryAddress = "http://www.site1.com:1234/folder1/";
-	const std::string& secondaryAddress = "http://www.site2.com/folder2/";
-	
-public:
-	Data* d;
-	const string& getExpectedResult() const { return d->expectedResult; }
-	void setExpectedResult(const string& str) { d->expectedResult = str; }
-	void setD(const Data& data) { d = new Data(data); }
 
+public:
+	CombinedAddressesData combindeAddresses;
+	const string& getExpectedResult() const { return combindeAddresses.expectedResult; }
+	void setExpectedResult(const string& str) { combindeAddresses.expectedResult = str; }
+	void setCombinedAddresses(const CombinedAddressesData& data) { combindeAddresses = data; }
+	string getCombinedAddresses() const { return combiner(combindeAddresses.primaryAddress, combindeAddresses.secondaryAddress); }
 	void SetUp() {}
-	void TearDown() { delete d; }
-	// another way
-	//ResplacingBySecondaryAddressTest() { account = new Data{/*...*/}; }
-	//~ResplacingBySecondaryAddressTest() { delete d; }
+	void TearDown() { /*delete combindeAddresses;*/ }
+	//ResplacingBySecondaryAddressTest() { account = new CombinedAddressesData{/*...*/}; }
+	//~ResplacingBySecondaryAddressTest() { delete combindeAddresses; } // another way
+
+	const std::string& mockPrimaryAddress = "http://www.site1.com:1234/folder1/";
+	const std::string& mockSecondaryAddress = "http://www.site2.com/folder2/";
+
 };
 
 
 
 TEST_F(AddressCombinerTestClass, EnteredSecondaryFullPathAddress_ExpectedReturnTheSecondaryAddress)
 {	
-	setD({ "http://www.site1.com:1234/folder1/", "http://www.site2.com/folder2/" });
-	setExpectedResult(d->secondaryAddress);
-	const auto& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1/", "http://www.site2.com/folder2/" });
+	setExpectedResult(combindeAddresses.secondaryAddress );
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryWithSlashSecondaryWithSlash_ExpectedCombineRighBothAddress) 
 {
-	setD({ "http://www.site1.com:1234/folder1/", "/folder2/" });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1/", "/folder2/" });
 	setExpectedResult("http://www.site1.com:1234/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryWithSlashSecondaryNoSlash_ExpectedCombineRighBothAddress)
 {
-	setD({ "http://www.site1.com:1234/folder1/", "folder2/" });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1/", "folder2/" });
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress)
 {
-	setD({ "http://www.site1.com:1234/folder1", "folder2/"  });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1", "folder2/"  });
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryNoSlashSecondaryWithDotSlash_ExpectedCombineRighBothAddress)
 {
-	setD({ "http://www.site1.com:1234/folder1", "./folder2/" });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1", "./folder2/" });
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryWithSlashSecondaryWithDotSlash_ExpectedCombineRighBothAddress)
 {
-	setD({ "http://www.site1.com:1234/folder1/", "./folder2/" });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1/", "./folder2/" });
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 TEST_F(AddressCombinerTestClass, InputTrimTestForBothAddresses_ExpectedCombineRighBothAddress)
 {
-	setD({
+	setCombinedAddresses({
 		"        http://www.site1.com:1234/folder1//////////////               "
 		, "                 folder2////////////         " 
 		});
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 TEST_F(AddressCombinerTestClass, InputPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressWithFolderBack)
 {
-	setD({"http://www.site1.com:1234/folder1/", "../folder2/" });
+	setCombinedAddresses({"http://www.site1.com:1234/folder1/", "../folder2/" });
 	setExpectedResult("http://www.site1.com:1234/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 
 TEST_F(AddressCombinerTestClass, InputPrimaryWithSlashSecondaryWithDoubleDotSlash_ExpectedCombineRighBothAddressNoFolderBack)
 {
-	setD({ "http://www.site1.com:1234/", "../folder2/"  });
+	setCombinedAddresses({ "http://www.site1.com:1234/", "../folder2/"  });
 	setExpectedResult("http://www.site1.com:1234/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryNoSlashSecondaryWithSlash_ExpectedCombineRighBothAddress)
 {
-	setD({ "http://www.site1.com:1234/folder1", "/folder2/" });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1", "/folder2/" });
 	setExpectedResult("http://www.site1.com:1234/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 TEST_F(AddressCombinerTestClass, EnteredPrimaryNoSlashSecondaryWithDoubleSlash_ExpectedCombineRighBothAddress)
 {
-	setD({ "http://www.site1.com:1234/folder1", "//site2.com/folder2/" });
+	setCombinedAddresses({ "http://www.site1.com:1234/folder1", "//site2.com/folder2/" });
 	setExpectedResult("http://site2.com/folder2");
-	const std::string& assume = combiner(d->primaryAddress, d->secondaryAddress);
-	EXPECT_EQ(assume, getExpectedResult());
+	EXPECT_EQ(getCombinedAddresses(), getExpectedResult());
 }
 
 
 
 
-
-class CombineAddressTest : public ::testing::TestWithParam<Data> 
-{
-public:
-	string assume;
-	string result;
-	CombineAddressTest() {
-		auto as = GetParam();
-		assume = combiner(as.primaryAddress, as.secondaryAddress);
-		result = as.expectedResult;
-	}
-	~CombineAddressTest() {}
-
-};
+		//lots of test cases
+class CombineAddressTest : public ::testing::TestWithParam<CombinedAddressesData>
+{};//
+//{//
+//public:
+//	string assume;
+//	string result;
+//	CombineAddressTest() {
+//		auto combinedAddresses = GetParam();	//CombinedAddressesData
+//		assume = combiner(combinedAddresses.primaryAddress, combinedAddresses.secondaryAddress);
+//		result = combinedAddresses.expectedResult;
+//	}
+//	~CombineAddressTest() {}
+//};//
 
 TEST_P(CombineAddressTest, ExternalGenerator)
 {
-	//auto as = GetParam();
-	//const std::string& assume = combiner(as.primaryAddress, as.secondaryAddress);
-	//const std::string& result = as.expectedResult;
+	auto combinedAddresses = GetParam();
+	const std::string& assume = combiner(combinedAddresses.primaryAddress, combinedAddresses.secondaryAddress);
+	const std::string& result = combinedAddresses.expectedResult;
 	EXPECT_EQ(assume, result);
 }
 
 INSTANTIATE_TEST_CASE_P(AddressCombinerTestAllUnExpectedValueTests, CombineAddressTest, ::testing::Values(
-	Data{
+	CombinedAddressesData{
 		"http://www.site1.com:1234/folder1//////////////", "folder2////////////"
 		, "http://www.site1.com:1234/folder1/folder2"
 	}
-	, Data{ "http://www.site1.com:1234/folder1/", "/", "http://www.site1.com:1234" }	//to fix
-	, Data{ "http://www.site1.com:1234/", "./", "http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/folder1/", "./", "http://www.site1.com:1234/folder1" }
-	, Data{ "http://www.site1.com:1234/", "../", "http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/", "//", "http://www.site1.com:1234" }
-	, Data{ "http://www.site1.com:1234/folder1/", "../", "http://www.site1.com:1234" }	
+	, CombinedAddressesData{ "http://www.site1.com:1234/folder1/", "/", "http://www.site1.com:1234" }	//to fix
+	, CombinedAddressesData{ "http://www.site1.com:1234/", "./", "http://www.site1.com:1234" }
+	, CombinedAddressesData{ "http://www.site1.com:1234/folder1/", "./", "http://www.site1.com:1234/folder1" }
+	, CombinedAddressesData{ "http://www.site1.com:1234/", "../", "http://www.site1.com:1234" }
+	, CombinedAddressesData{ "http://www.site1.com:1234/", "//", "http://www.site1.com:1234" }
+	, CombinedAddressesData{ "http://www.site1.com:1234/folder1/", "../", "http://www.site1.com:1234" }	
 ));//; //if used without gmock, add: ,)
 
 
