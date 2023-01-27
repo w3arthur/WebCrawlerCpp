@@ -14,7 +14,7 @@ class CrawlerRunMockTest : public ::testing::Test
 public:
 	MyCrawlerRun* mock_cr;
 	std::shared_ptr<IHtmlRequest> mockhtml;
-	
+
 private:
 	class MockHtmlRequest : public IHtmlRequest
 	{
@@ -26,12 +26,18 @@ private:
 
 
 public:
-	MockHtmlRequest& getMockHtmlRequest() 
+	MockHtmlRequest& getMockHtmlRequest()
 	{
 		auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
-		MockHtmlRequest* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
+		auto* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
 		return *p_mockHtmlRequest;
 	}
+	MyCrawlerRun& getMyCrawlerRun()
+	{
+		return *mock_cr;
+	}
+
+
 
 public:
 	void SetUp()
@@ -39,13 +45,13 @@ public:
 		mock_cr = new MyCrawlerRun();
 		mockhtml = std::make_shared<MockHtmlRequest>();
 		mock_cr->setHtmlRequest(mockhtml);
-		
+
 	}
 
 	void TearDown()
 	{
 		delete mock_cr;
-		
+
 	} // delete mockhtml will done inside mock_cr
 
 

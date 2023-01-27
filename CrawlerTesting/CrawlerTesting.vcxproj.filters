@@ -22,6 +22,9 @@
     <ClCompile Include="MyCrawlerRun.cpp">
       <Filter>Classes\CrawlerRunTest</Filter>
     </ClCompile>
+    <ClCompile Include="MockCrawlerRun.cpp">
+      <Filter>Classes\CrawlerRunTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -34,6 +37,9 @@
       <Filter>Classes\CrawlerRunTest</Filter>
     </ClInclude>
     <ClInclude Include="MyCrawlerRun.h">
+      <Filter>Classes\CrawlerRunTest</Filter>
+    </ClInclude>
+    <ClInclude Include="MockCrawlerRun.h">
       <Filter>Classes\CrawlerRunTest</Filter>
     </ClInclude>
   </ItemGroup>

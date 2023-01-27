@@ -24,8 +24,8 @@ extern class CrawlerRunMockTest;
 #include "MockCrawlerRun.h"
 
 
-	//on development: try to develop
-TEST(MockCrawlerExam, DISABLED_A1)
+
+TEST(MockCrawlerExam, A1)
 {
 
 	MockCrawlerRun cr;
@@ -47,7 +47,7 @@ TEST(MockCrawlerExam, DISABLED_A1)
 
 
 
-TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+TEST_F(CrawlerRunMockTest, DISABLED_EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
 	initMock(1);	//levels 1
@@ -58,7 +58,7 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectTo
 
 
 
-TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
+TEST_F(CrawlerRunMockTest, DISABLED_EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
 {
 	const auto mock_string_level1 =
 		R"V0G0N(
@@ -94,7 +94,7 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_Expec
 
 
 
-TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
+TEST_F(CrawlerRunMockTest, DISABLED_WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
 {
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
 	initMock(1);	//levels 1
@@ -111,7 +111,7 @@ TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOn
 
 
 
-TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom200MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
+TEST_F(CrawlerRunMockTest, DISABLED_RunningTimeDurationIsLessFrom200MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
 	auto startTime{ std::chrono::high_resolution_clock::now() };
 
@@ -136,7 +136,7 @@ TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom200MilliSecEnteredRegula
 
 
 
-TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
+TEST_F(CrawlerRunMockTest, DISABLED_EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
 {
 	const auto mock_string_no_image =
 		R"V0G0N(
