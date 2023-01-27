@@ -19,6 +19,9 @@ using ::testing::ValuesIn;
 // improve string to string_view for better performance
 
 
+//deceide about usage of www
+// in case is an image or an a
+
 struct CombinedAddressesData
 {
 	std::string primaryAddress, secondaryAddress, expectedResult;

@@ -16,7 +16,7 @@ using ::testing::Invoke;
 using ::testing::InvokeWithoutArgs;
 using ::testing::DoDefault;
 using ::testing::DoAll;
-
+using ::testing::NiceMock;
 extern class CrawlerRunMockTest;
 
 
@@ -25,27 +25,43 @@ extern class CrawlerRunMockTest;
 
 
 	//on development: try to develop
+
+class MockHtmlRequest2 : public IHtmlRequest
+{
+public:
+	MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
+	//MOCK_METHOD1(getHtml, std::string(const std::string uri));
+};
+
+
+
+
 TEST(MockCrawlerExam, DISABLED_A1)
 {
 
-	MockCrawlerRun cr;
+	NiceMock<MockCrawlerRun> cr;
+	auto mockhtml = std::make_shared<MockHtmlRequest2>();
 
-	EXPECT_CALL(cr, html_get(_)).Times(AtLeast(1))
+
+	//EXPECT_CALL(cr, html_get(_)).Times(AtLeast(1))
+	//	.WillOnce(Return("<img src=\"ssss.jpg\" >"));
+
+	EXPECT_CALL(*mockhtml, getHtml(_)).Times(AtLeast(1))
 		.WillOnce(Return("<img src=\"ssss.jpg\" >"));
 
-	EXPECT_CALL(cr, init(_, _)).Times(AtLeast(1));
 
+	cr.setHtmlRequest(mockhtml);
 	cr.init("http://www.site.com", 1);	//levels 1
 
 	auto assume{ cr.to_string() };
 
-	auto result{ "{result:[{}]}" };
+	auto result{ R"({"results":[{"depth":1,"imageUrl":"http://www.site.com/ssss.jpg","sourceUrl":"http://www.site.com"}]})" };
 	EXPECT_EQ(assume, result);
 }
 
 
 
-
+#if 1
 
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
@@ -151,3 +167,6 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToRetur
 	string result = R"(null)";	//to fix and get results":[]}
 	EXPECT_EQ(assume, result);
 }
+
+
+#endif
