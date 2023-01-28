@@ -44,7 +44,7 @@ public:
 protected: //set as protected!, rty to delete virtual
     CrawlerRun() = default;
     void init(const std::string& begin_address, size_t crawler_levels);
-    void search_for_links(GumboNode* node, const std::string& uri, const size_t& level);
+    void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level);
     void crawler(const std::string& uri, size_t level) ; //run on thread
 
 private:

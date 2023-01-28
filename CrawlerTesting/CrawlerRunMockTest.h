@@ -8,6 +8,10 @@
 #include "MyCrawlerRun.h"//#include <CrawlerRun.h> //#include <IHtmlRequest.h>
 #include "Utils.h"
 
+using ::testing::_;
+using ::testing::AtLeast;
+using ::testing::AtMost;
+using ::testing::Return;
 
 class CrawlerRunMockTest : public ::testing::Test
 {
@@ -19,8 +23,18 @@ private:
 		MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
 	};
 
+protected:
+	class MockCrawlerRun : public CrawlerRun
+	{
+	public:
+		MOCK_METHOD(void, search_inside_element, (GumboNode* node, const std::string& uri, const size_t& level));
+		MOCK_METHOD(void, crawler, (const std::string& uri, size_t level));
+		MOCK_METHOD(string, to_string, ());
+	};
+
+
 private:
-	class MyCrawlerRun : public CrawlerRun	//fake object too
+	class MyCrawlerRun : public MockCrawlerRun	//fake object too
 	{
 	public:	//all protected method set to public:
 		void setHtmlRequest(IHtmlRequest* html_request)
@@ -32,10 +46,23 @@ private:
 		{
 			CrawlerRun::init(begin_address, crawler_levels);
 		}
-		//MOCK_METHOD(void, init, (const std::string, size_t));
-	//	void search_for_links(GumboNode* node, const std::string& uri, const size_t& level)
-	//	void crawler(const std::string& uri, size_t level)	
-	//	virtual string html_get(const string& uri) const//Delete premenatly
+
+	public:
+		void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level)
+		{
+			MockCrawlerRun::search_inside_element(node, uri, level);	// only count
+			CrawlerRun::search_inside_element(node, uri, level);
+		}
+		void crawler(const std::string& uri, size_t level)
+		{
+			MockCrawlerRun::crawler(uri, level);	// only count
+			CrawlerRun::crawler(uri, level);
+		}
+		string to_string()
+		{
+			string str = MockCrawlerRun::to_string();	// only count
+			return !str.empty() ? str : CrawlerRun::to_string();
+		}
 	};
 
 public:
@@ -45,14 +72,13 @@ public:
 
 public:
 	MockHtmlRequest& getMockHtmlRequest()
-	{
-		//auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
+	{	//auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
 		//auto* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
 		return dynamic_cast<MockHtmlRequest&>(*mockhtml);
 	}
 	MyCrawlerRun& getMyCrawlerRun()
 	{
-		return *mock_cr;
+		return dynamic_cast<MyCrawlerRun&>(*mock_cr);
 	}
 
 
@@ -63,12 +89,15 @@ public:
 		mock_cr = new MyCrawlerRun();
 		mockhtml = new MockHtmlRequest();
 		mock_cr->setHtmlRequest(mockhtml);
+		EXPECT_CALL(getMyCrawlerRun(), crawler(_, _)).Times(AtLeast(1));
+		EXPECT_CALL(getMyCrawlerRun(), search_inside_element(_, _, _)).Times(AtLeast(3));
+		EXPECT_CALL(getMyCrawlerRun(), to_string()).Times(AtMost(1));
 	}
 
 	void TearDown()
 	{
 		delete mock_cr;
-	} // delete mockhtml will done inside mock_cr
+	} // delete mockhtml done inside mock_cr
 
 
 

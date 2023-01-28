@@ -66,7 +66,10 @@ TEST(MockCrawlerExam, DISABLED_A1)
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
+	
 	initMock(1);	//levels 1
+
+
 	auto assume{ printMock() };
 	auto result{ mock_result };
 	EXPECT_EQ(assume, result);
@@ -113,6 +116,8 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_Expec
 TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
 {
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
+	EXPECT_CALL(getMyCrawlerRun(), to_string()).Times(0);
+
 	initMock(1);	//levels 1
 	writeMockToFile(mockFileName);
 

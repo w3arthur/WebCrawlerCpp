@@ -97,12 +97,12 @@ void CrawlerRun::crawler(const string& uri, size_t level)
     }
     string contents = html_get(uri);
     GumboOutput* output = gumbo_parse(contents.c_str());
-    search_for_links(output->root, uri, level);
+    search_inside_element(output->root, uri, level);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
 
 
-void CrawlerRun::search_for_links(GumboNode* node, const string& uri, const size_t& level)
+void CrawlerRun::search_inside_element(GumboNode* node, const string& uri, const size_t& level)
 {
     if (node->type != GUMBO_NODE_ELEMENT) return;
     if
@@ -146,7 +146,7 @@ void CrawlerRun::search_for_links(GumboNode* node, const string& uri, const size
         auto childNode
         { static_cast<GumboNode*>(children->data[i]) };
         ///threadList.push_back(thread(search_for_links, childNode, uri, level));
-        search_for_links(childNode, uri, level);
+        search_inside_element(childNode, uri, level);
     }
 
     ////for (auto& th : threadList) th.join();
