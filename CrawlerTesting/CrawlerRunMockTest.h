@@ -23,7 +23,7 @@ private:
 		MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
 	};
 
-protected:
+private:
 	class MockCrawlerRun : public ICrawlerRun
 	{
 	public:	// basicly only ICrawlerRun public methods is important to override (set)
