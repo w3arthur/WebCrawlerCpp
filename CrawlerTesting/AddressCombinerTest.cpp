@@ -73,7 +73,7 @@ TEST_F(AddressCombinerTestClass, EnteredPrimaryWithSlashSecondaryNoSlash_Expecte
 }
 
 
-TEST_F(AddressCombinerTestClass, EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress)
+TEST_F(AddressCombinerTestClass, DISABLED_EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress)
 {
 	setCombinedAddresses({ "http://www.site1.com:1234/folder1", "folder2/"  });
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");

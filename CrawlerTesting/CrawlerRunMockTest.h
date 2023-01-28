@@ -73,6 +73,7 @@ private:
 		}
 	};
 
+
 public:
 	MyCrawlerRun* myCrawlerRun;	//set CrawlerRun to public and set the mock
 	IHtmlRequest* mockHtmlReques;
