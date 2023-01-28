@@ -90,7 +90,8 @@ public:
 		mockhtml = new MockHtmlRequest();
 		mock_cr->setHtmlRequest(mockhtml);
 		EXPECT_CALL(getMyCrawlerRun(), crawler(_, _)).Times(AtLeast(1));
-		EXPECT_CALL(getMyCrawlerRun(), search_inside_element(_, _, _)).Times(AtLeast(3));
+		EXPECT_CALL(getMyCrawlerRun(), search_inside_element(_, _, _))
+			.Times(AtLeast(at_laset_mock_string_levels));
 		EXPECT_CALL(getMyCrawlerRun(), to_string()).Times(AtMost(1));
 	}
 
@@ -113,6 +114,8 @@ public:	//class methods
 
 
 public:	//mock basic data
+	const size_t at_laset_mock_string_levels = 3;
+
 	const string mock_string{ R"V0G0N(
 			<!doctype><html><head></head><body>
 				<h1> Title <h1>

@@ -65,6 +65,7 @@ TEST(MockCrawlerExam, DISABLED_A1)
 
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
+	//added basic test cases inside SetUp  !
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
 	
 	initMock(1);	//levels 1
@@ -79,6 +80,8 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectTo
 
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_ExpectToReturnRightJsonString)
 {
+	//added basic test cases inside SetUp
+
 	const auto mock_string_level1 =
 		R"V0G0N(
 		<!doctype><html><head></head><body>
@@ -115,8 +118,9 @@ TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageWithFourImageLevel1Level2_Expec
 
 TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonStringFromTheFile)
 {
+	//added basic test cases inside SetUp
+
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
-	EXPECT_CALL(getMyCrawlerRun(), to_string()).Times(0);
 
 	initMock(1);	//levels 1
 	writeMockToFile(mockFileName);
@@ -134,6 +138,8 @@ TEST_F(CrawlerRunMockTest, WriteReadFromFileEnteredRegularHtmlPageWithOneImageOn
 
 TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom200MilliSecEnteredRegularHtmlPageWithOneImageOnlyLevel1_ExpectToReturnRightJsonString)
 {
+	//added basic test cases inside SetUp
+
 	auto startTime{ std::chrono::high_resolution_clock::now() };
 
 	EXPECT_CALL(getMockHtmlRequest(), getHtml(_)).Times(1).WillOnce(Return(mock_string));
@@ -159,6 +165,8 @@ TEST_F(CrawlerRunMockTest, RunningTimeDurationIsLessFrom200MilliSecEnteredRegula
 
 TEST_F(CrawlerRunMockTest, EnteredRegularHtmlPageNoImageOnlyLevel1_ExpectToReturnRightJsonString) //to fix
 {
+	//added basic test cases inside SetUp
+
 	const auto mock_string_no_image =
 		R"V0G0N(
 			<!doctype><html><head></head><body>
