@@ -43,7 +43,7 @@ void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
 
 CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
 {
-    html_request = std::make_shared<HtmlRequest>();
+    html_request = new HtmlRequest();
     
     init(begin_address, crawler_levels);
 }

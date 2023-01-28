@@ -40,7 +40,7 @@ TEST(MockCrawlerExam, DISABLED_A1)
 {
 
 	NiceMock<MockCrawlerRun> cr;
-	auto mockhtml = std::make_shared<MockHtmlRequest2>();
+	auto mockhtml = new MockHtmlRequest2();
 
 
 	//EXPECT_CALL(cr, html_get(_)).Times(AtLeast(1))

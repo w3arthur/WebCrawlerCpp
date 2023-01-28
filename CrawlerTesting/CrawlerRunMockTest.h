@@ -17,14 +17,13 @@ private:
 	{
 	public:
 		MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
-		//MOCK_METHOD1(getHtml, std::string(const std::string uri));
 	};
 
 private:
 	class MyCrawlerRun : public CrawlerRun	//fake object too
 	{
 	public:	//all protected method set to public:
-		void setHtmlRequest(std::shared_ptr<IHtmlRequest> html_request)
+		void setHtmlRequest(IHtmlRequest* html_request)
 		{
 			CrawlerRun::setHtmlRequest(html_request);
 		}
@@ -41,15 +40,15 @@ private:
 
 public:
 	MyCrawlerRun* mock_cr;
-	std::shared_ptr<IHtmlRequest> mockhtml;
+	IHtmlRequest* mockhtml;
 
 
 public:
 	MockHtmlRequest& getMockHtmlRequest()
 	{
-		auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
-		auto* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
-		return *p_mockHtmlRequest;
+		//auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
+		//auto* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
+		return dynamic_cast<MockHtmlRequest&>(*mockhtml);
 	}
 	MyCrawlerRun& getMyCrawlerRun()
 	{
@@ -62,16 +61,15 @@ public:
 	void SetUp()
 	{
 		mock_cr = new MyCrawlerRun();
-		mockhtml = std::make_shared<MockHtmlRequest>();
+		mockhtml = new MockHtmlRequest();
 		mock_cr->setHtmlRequest(mockhtml);
-
 	}
 
 	void TearDown()
 	{
 		delete mock_cr;
-
 	} // delete mockhtml will done inside mock_cr
+
 
 
 
@@ -81,6 +79,8 @@ public:	//class methods
 	string printMock();
 
 	void writeMockToFile(const string& file_address_name);
+
+
 
 
 public:	//mock basic data

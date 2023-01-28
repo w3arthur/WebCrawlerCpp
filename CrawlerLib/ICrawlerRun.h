@@ -9,9 +9,10 @@ public:
 	virtual void write_to_file(const string& file_address_name) const = 0;
 	virtual string to_string() const = 0;
 protected:	//internal use and testing methods
-	virtual void setHtmlRequest(std::shared_ptr<IHtmlRequest> html_request) = 0;
-	virtual string html_get(const string& uri) const = 0;
+	virtual void setHtmlRequest(IHtmlRequest* html_request) = 0;
 	virtual void init(const std::string& begin_address, size_t crawler_levels) = 0;
 	virtual void search_for_links(GumboNode* node, const string& uri, const size_t& level) = 0;
 	virtual void crawler(const string& uri, size_t level) = 0;
+//private:
+	//virtual string html_get(const string& uri) const = 0;
 };

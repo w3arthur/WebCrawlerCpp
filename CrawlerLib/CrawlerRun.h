@@ -9,8 +9,8 @@
 class CrawlerRun : public ICrawlerRun
 {
 protected:  //resurce for testing
-    std::shared_ptr<IHtmlRequest> html_request;   //will set in constructore
-    void setHtmlRequest(std::shared_ptr<IHtmlRequest> html_request) { this->html_request = html_request; }
+    IHtmlRequest* html_request = nullptr;   //will set in constructore
+    void setHtmlRequest(IHtmlRequest* html_request) { this->html_request = html_request; }
 private:
     string begin_address{ "" };
     size_t crawler_levels{ 0 };
@@ -31,10 +31,10 @@ private:
     std::list<Image> images;             //to delete
     nlohmann::json json_images;
 
-
 public:
     explicit CrawlerRun(const std::string& begin_address, size_t crawler_levels);
-    ~CrawlerRun() {/* delete html_request;*/ }
+    ~CrawlerRun() { delete html_request; }
+
 public:
     void setTimeLimit(size_t timeLimit);  //to set
     void print() const;
@@ -43,10 +43,12 @@ public:
 
 protected: //set as protected!, rty to delete virtual
     CrawlerRun() = default;
-    std::string html_get(const string& address) const;
     void init(const std::string& begin_address, size_t crawler_levels);
     void search_for_links(GumboNode* node, const std::string& uri, const size_t& level);
     void crawler(const std::string& uri, size_t level) ; //run on thread
+
+private:
+    std::string html_get(const string& address) const;
 };
 
 
