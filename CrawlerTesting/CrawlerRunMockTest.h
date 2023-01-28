@@ -27,8 +27,8 @@ private:
 	class MockCrawlerRun : public ICrawlerRun
 	{
 	public:	// basicly only ICrawlerRun public methods is important to override (set)
-		MOCK_METHOD(void, search_inside_element, (GumboNode* node, const std::string& uri, const size_t& level));
 		MOCK_METHOD(void, crawler, (const std::string& uri, size_t level));
+		MOCK_METHOD(void, search_inside_element, (GumboNode* node, const std::string& uri, const size_t& level));
 		MOCK_METHOD(string, to_string, (), (const));
 		MOCK_METHOD(void, write_to_file, (const string& file_address_name), (const));
 		//have to override, but not in use:
@@ -50,18 +50,17 @@ private:
 		{
 			CrawlerRun::init(begin_address, crawler_levels);
 		}
-	public:
-		void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level)
-		{
-			MockCrawlerRun::search_inside_element(node, uri, level);	// only count
-			CrawlerRun::search_inside_element(node, uri, level);
-		}
 		void crawler(const std::string& uri, size_t level)
 		{
 			MockCrawlerRun::crawler(uri, level);	// only count
 			CrawlerRun::crawler(uri, level);
 		}
-
+		void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level)
+		{
+			MockCrawlerRun::search_inside_element(node, uri, level);	// only count
+			CrawlerRun::search_inside_element(node, uri, level);
+		}
+	public:
 		void write_to_file(const string& file_address_name)
 		{
 			MockCrawlerRun::write_to_file(file_address_name);	// only count
@@ -72,13 +71,11 @@ private:
 			string str = MockCrawlerRun::to_string();	// only count
 			return !str.empty() ? str : CrawlerRun::to_string();
 		}
-
 	};
 
 public:
-	MyCrawlerRun* myCrawlerRun;	//set to interface
+	MyCrawlerRun* myCrawlerRun;	//set CrawlerRun to public and set the mock
 	IHtmlRequest* mockHtmlReques;
-
 
 public:
 	MockHtmlRequest& getMockHtmlRequest()
@@ -90,7 +87,6 @@ public:
 	{
 		return dynamic_cast<MockCrawlerRun&>(*myCrawlerRun);
 	} //
-
 
 
 public:
@@ -114,14 +110,12 @@ public:
 
 
 
-
 public:	//class methods
 	void initMock(size_t levels);
 
 	string printMock();
 
 	void writeMockToFile(const string& file_address_name);
-
 
 
 

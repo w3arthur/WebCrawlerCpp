@@ -14,33 +14,6 @@ std::string CrawlerRun::html_get(const string& uri) const
     return html_request->getHtml(uri);
 }
 
-void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
-{
-    this->begin_address = begin_address;
-    this->crawler_levels = crawler_levels;
-    lastDurationSec = 0;
-    auto startTime{ std::chrono::high_resolution_clock::now() };
-
-    levels[1].push_back(begin_address);
-    for (size_t i{ 1 }; i <= crawler_levels; ++i)
-    {
-        std::vector<std::thread> threadGlobalList;
-        if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadGlobalList.reserve(levels[i].size());
-        else break; //no elements on i level
-        for (auto& address : levels[i])
-        {
-            //crawler(address, i);
-            threadGlobalList.push_back(std::thread(&CrawlerRun::crawler, this, address, i));   /////
-        }
-        for (auto& t : threadGlobalList)
-            t.join();
-    }
-    auto stopTime{ std::chrono::high_resolution_clock::now() };
-    auto duration{ std::chrono::duration_cast<std::chrono::seconds> (stopTime - startTime) };
-    lastDurationSec = duration.count();
-}
-
-
 CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
 {
     html_request = new HtmlRequest();
@@ -82,9 +55,41 @@ string CrawlerRun::to_string() const
 
 
 
+
+
+
+
+void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
+{
+    this->begin_address = begin_address;
+    this->crawler_levels = crawler_levels;
+    lastDurationSec = 0;
+    auto startTime{ std::chrono::high_resolution_clock::now() };
+
+    levels[1].push_back(begin_address);
+    for (size_t i{ 1 }; i <= crawler_levels; ++i)
+    {
+        std::vector<std::thread> threadGlobalList;
+        if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadGlobalList.reserve(levels[i].size());
+        else break; //no elements on i level
+        for (auto& address : levels[i])
+        {
+            //crawler(address, i);
+            threadGlobalList.push_back(std::thread(&CrawlerRun::crawler, this, address, i));   /////
+        }
+        for (auto& t : threadGlobalList)
+            t.join();
+    }
+    auto stopTime{ std::chrono::high_resolution_clock::now() };
+    auto duration{ std::chrono::duration_cast<std::chrono::seconds> (stopTime - startTime) };
+    lastDurationSec = duration.count();
+}
+
+
 void CrawlerRun::crawler(const string& uri, size_t level)
 {
     visitedUri_m.lock();
+        //check if link crawled before
     if (visitedUri.find(uri) != visitedUri.end())
     {
         visitedUri_m.unlock();
