@@ -19,20 +19,20 @@ public:
 
 	//MOCK_METHOD(void, init, (const std::string, size_t));
 
-public:
-	void search_for_links(GumboNode* node, const std::string& uri, const size_t& level)
-	{
-		CrawlerRun::search_for_links(node, uri, level);
-	}
-public:
-	void crawler(const std::string& uri, size_t level)
-	{
-		CrawlerRun::crawler(uri, level);
-	}
+//public:
+//	void search_for_links(GumboNode* node, const std::string& uri, const size_t& level)
+//	{
+//		CrawlerRun::search_for_links(node, uri, level);
+//	}
+//public:
+//	void crawler(const std::string& uri, size_t level)
+//	{
+//		CrawlerRun::crawler(uri, level);
+//	}
 
-public:
-	virtual string html_get(const string& uri) const
-	{
-		return CrawlerRun::html_get(uri);
-	}
+//public:			//Delete premenatly
+//	virtual string html_get(const string& uri) const
+//	{
+//		return CrawlerRun::html_get(uri);
+//	}
 };
