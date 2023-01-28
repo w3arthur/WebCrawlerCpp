@@ -34,6 +34,7 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="CrawlerRunMockTest.h" />
+    <ClInclude Include="CrawlertRunMockTestBackup.h" />
     <ClInclude Include="MockCrawlerRun.h" />
     <ClInclude Include="MyCrawlerRun.h" />
     <ClInclude Include="pch.h" />

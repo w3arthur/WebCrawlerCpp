@@ -42,6 +42,9 @@
     <ClInclude Include="MockCrawlerRun.h">
       <Filter>Classes\CrawlerRunTest</Filter>
     </ClInclude>
+    <ClInclude Include="CrawlertRunMockTestBackup.h">
+      <Filter>Classes\CrawlerRunTest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_case.json" />
