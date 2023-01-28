@@ -31,7 +31,7 @@ protected:
 		MOCK_METHOD(void, crawler, (const std::string& uri, size_t level));
 		MOCK_METHOD(string, to_string, (), (const));
 		MOCK_METHOD(void, write_to_file, (const string& file_address_name), (const));
-		//not in use:
+		//have to override, but not in use:
 		MOCK_METHOD(void, print, (), (const));
 		MOCK_METHOD(void, setTimeLimit, (size_t timeLimit));
 	};
@@ -40,8 +40,6 @@ protected:
 private:
 	class MyCrawlerRun : public MockCrawlerRun, protected CrawlerRun	//fake object too
 	{
-	public:
-		MyCrawlerRun() = default;
 	public:	//all protected method set to public:
 		void setHtmlRequest(IHtmlRequest* html_request)
 		{
@@ -69,7 +67,7 @@ private:
 			MockCrawlerRun::write_to_file(file_address_name);	// only count
 			CrawlerRun::write_to_file(file_address_name);
 		}
-		string to_string() 
+		string to_string()
 		{
 			string str = MockCrawlerRun::to_string();	// only count
 			return !str.empty() ? str : CrawlerRun::to_string();
@@ -78,41 +76,40 @@ private:
 	};
 
 public:
-	MyCrawlerRun* mock_cr;	//set to interface
-
-	MyCrawlerRun* my_cr;
-	IHtmlRequest* mockhtml;
+	MyCrawlerRun* myCrawlerRun;	//set to interface
+	IHtmlRequest* mockHtmlReques;
 
 
 public:
 	MockHtmlRequest& getMockHtmlRequest()
 	{	//auto& sptr_mockHtmlRequest = std::dynamic_pointer_cast<MockHtmlRequest>(mockhtml);
 		//auto* p_mockHtmlRequest = sptr_mockHtmlRequest.get();
-		return dynamic_cast<MockHtmlRequest&>(*mockhtml);
+		return dynamic_cast<MockHtmlRequest&>(*mockHtmlReques);
 	}
-	MyCrawlerRun& getMyCrawlerRun()
+	MockCrawlerRun& getMcokCrawlerRun()
 	{
-		return dynamic_cast<MyCrawlerRun&>(*mock_cr);
-	}
+		return dynamic_cast<MockCrawlerRun&>(*myCrawlerRun);
+	} //
 
 
 
 public:
 	void SetUp()
 	{
-		mock_cr = new MyCrawlerRun();
-		mockhtml = new MockHtmlRequest();
-		mock_cr->setHtmlRequest(mockhtml);
-		EXPECT_CALL(getMyCrawlerRun(), crawler(_, _)).Times(AtLeast(1));
-		EXPECT_CALL(getMyCrawlerRun(), search_inside_element(_, _, _))
+		myCrawlerRun = new MyCrawlerRun();
+		mockHtmlReques = new MockHtmlRequest();
+		myCrawlerRun->setHtmlRequest(mockHtmlReques);
+
+		EXPECT_CALL(getMcokCrawlerRun(), crawler(_, _)).Times(AtLeast(1));
+		EXPECT_CALL(getMcokCrawlerRun(), search_inside_element(_, _, _))
 			.Times(AtLeast(at_laset_mock_string_levels));
-		EXPECT_CALL(getMyCrawlerRun(), write_to_file(_)).Times(AtMost(1));
-		EXPECT_CALL(getMyCrawlerRun(), to_string()).Times(AtMost(1));
+		EXPECT_CALL(getMcokCrawlerRun(), write_to_file(_)).Times(AtMost(1));
+		EXPECT_CALL(getMcokCrawlerRun(), to_string()).Times(AtMost(1));
 	}
 
 	void TearDown()
 	{
-		delete mock_cr;
+		delete myCrawlerRun;
 	} // delete mockhtml done inside mock_cr
 
 
