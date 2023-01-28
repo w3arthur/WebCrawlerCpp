@@ -24,18 +24,24 @@ private:
 	};
 
 protected:
-	class MockCrawlerRun : public CrawlerRun
+	class MockCrawlerRun : public ICrawlerRun
 	{
-	public:
+	public:	// basicly only ICrawlerRun public methods is important to override (set)
 		MOCK_METHOD(void, search_inside_element, (GumboNode* node, const std::string& uri, const size_t& level));
 		MOCK_METHOD(void, crawler, (const std::string& uri, size_t level));
-		MOCK_METHOD(string, to_string, ());
+		MOCK_METHOD(string, to_string, (), (const));
+		MOCK_METHOD(void, write_to_file, (const string& file_address_name), (const));
+		//not in use:
+		MOCK_METHOD(void, print, (), (const));
+		MOCK_METHOD(void, setTimeLimit, (size_t timeLimit));
 	};
 
 
 private:
-	class MyCrawlerRun : public MockCrawlerRun	//fake object too
+	class MyCrawlerRun : public MockCrawlerRun, protected CrawlerRun	//fake object too
 	{
+	public:
+		MyCrawlerRun() = default;
 	public:	//all protected method set to public:
 		void setHtmlRequest(IHtmlRequest* html_request)
 		{
@@ -46,7 +52,6 @@ private:
 		{
 			CrawlerRun::init(begin_address, crawler_levels);
 		}
-
 	public:
 		void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level)
 		{
@@ -58,15 +63,24 @@ private:
 			MockCrawlerRun::crawler(uri, level);	// only count
 			CrawlerRun::crawler(uri, level);
 		}
-		string to_string()
+
+		void write_to_file(const string& file_address_name)
+		{
+			MockCrawlerRun::write_to_file(file_address_name);	// only count
+			CrawlerRun::write_to_file(file_address_name);
+		}
+		string to_string() 
 		{
 			string str = MockCrawlerRun::to_string();	// only count
 			return !str.empty() ? str : CrawlerRun::to_string();
 		}
+
 	};
 
 public:
-	MyCrawlerRun* mock_cr;
+	MyCrawlerRun* mock_cr;	//set to interface
+
+	MyCrawlerRun* my_cr;
 	IHtmlRequest* mockhtml;
 
 
@@ -92,6 +106,7 @@ public:
 		EXPECT_CALL(getMyCrawlerRun(), crawler(_, _)).Times(AtLeast(1));
 		EXPECT_CALL(getMyCrawlerRun(), search_inside_element(_, _, _))
 			.Times(AtLeast(at_laset_mock_string_levels));
+		EXPECT_CALL(getMyCrawlerRun(), write_to_file(_)).Times(AtMost(1));
 		EXPECT_CALL(getMyCrawlerRun(), to_string()).Times(AtMost(1));
 	}
 
