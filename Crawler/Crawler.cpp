@@ -21,9 +21,26 @@ int main(int argc, char* argv[])
 {
 
     cout << "WebCrawler Cpp:" << endl;
-    size_t limitLevels{ 3 };
 
-    std::string uri1{ "https://arthurcam.com" };
+    std::string uri1;
+    size_t limitLevels;
+
+    //limitLevels = 3 ;
+    //uri1 = "https://arthurcam.com";
+
+    if (argc != 3)  // https://arthurcam.com 3
+    {
+        std::cout << "enogh args" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    uri1 = static_cast<string>(argv[1]);
+    limitLevels = static_cast<size_t>(std::stoi(argv[2]));
+
+
+
+
+
     ICrawlerRun* crowlerRun = new CrawlerRun(uri1, limitLevels) ;
 
     crowlerRun->write_to_file("result.json");
@@ -39,14 +56,6 @@ int main(int argc, char* argv[])
     cout << "\n\n" <<endl; //crashed!
 
     delete crowlerRun;
-
-
-    //if (argc != 2)
-    //{
-    //    std::cout << "Please provide a valid English word" << std::endl;
-    //    exit(EXIT_FAILURE);
-    //}
-    //if(argc > 0 || isCliProduction){} else{}
 
 
 
