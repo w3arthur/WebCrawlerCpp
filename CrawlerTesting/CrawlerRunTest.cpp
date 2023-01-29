@@ -21,7 +21,7 @@ extern class CrawlerRunMockTest;
 
 
 
-#include "MockCrawlerRun.h"
+#include "CrawlerRunMockTest.h"
 
 
 	//on development: try to develop
@@ -36,19 +36,19 @@ public:
 
 
 
-TEST(MockCrawlerExam, DISABLED_A1)
+TEST(MockCrawlerExam, DISABLED_NiceMockTest)	//on development
 {
 
-	NiceMock<MockCrawlerRun> cr;
+	NiceMock<MyCrawlerRun> cr;
+
 	auto mockhtml = new MockHtmlRequest2();
 
 
-	//EXPECT_CALL(cr, html_get(_)).Times(AtLeast(1))
+	EXPECT_CALL(cr, to_string()).Times(AtLeast(1));
 	//	.WillOnce(Return("<img src=\"ssss.jpg\" >"));
 
 	EXPECT_CALL(*mockhtml, getHtml(_)).Times(AtLeast(1))
 		.WillOnce(Return("<img src=\"ssss.jpg\" >"));
-
 
 	cr.setHtmlRequest(mockhtml);
 	cr.init("http://www.site.com", 1);	//levels 1

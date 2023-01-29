@@ -73,7 +73,7 @@ TEST_F(AddressCombinerTestClass, EnteredPrimaryWithSlashSecondaryNoSlash_Expecte
 }
 
 
-TEST_F(AddressCombinerTestClass, DISABLED_EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress)
+TEST_F(AddressCombinerTestClass, EnteredPrimaryNoSlashSecondaryNoSlash_ExpectedCombineRighBothAddress)
 {
 	setCombinedAddresses({ "http://www.site1.com:1234/folder1", "folder2/"  });
 	setExpectedResult("http://www.site1.com:1234/folder1/folder2");
@@ -176,7 +176,7 @@ INSTANTIATE_TEST_CASE_P(AddressCombinerTestAllUnExpectedValueTests, CombineAddre
 
 
 //disabling tes https://stackoverflow.com/questions/7208070/googletest-how-to-skip-a-test
-TEST(AddressCombinerTest, DISABLED_PrivateCaseForP) 
+TEST(AddressCombinerTest, DISABLED_PrivateCaseForP)
 {	//DISABLED_
 	std::string primaryAddress = "http://www.site1.com:1234/folder1";
 	std::string secondaryAddress = "../";

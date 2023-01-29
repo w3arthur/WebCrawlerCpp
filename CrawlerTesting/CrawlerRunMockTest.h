@@ -5,7 +5,7 @@
 
 	//::testing::NiceMock<MockHtmlRequest> mockhtml2; //try test with NiceMock
 
-#include "MyCrawlerRun.h"//#include <CrawlerRun.h> //#include <IHtmlRequest.h>
+#include <CrawlerRun.h>//#include <IHtmlRequest.h>
 #include "Utils.h"
 
 using ::testing::_;
@@ -13,65 +13,74 @@ using ::testing::AtLeast;
 using ::testing::AtMost;
 using ::testing::Return;
 
+
+
+
+
+class MockHtmlRequest : public IHtmlRequest
+{
+public:
+	MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
+};
+
+
+class MockCrawlerRun : public ICrawlerRun
+{
+public:	// basicly only ICrawlerRun public methods is important to override (set)
+	MOCK_METHOD(void, crawler, (const std::string& uri, size_t level));
+	MOCK_METHOD(void, search_inside_element, (GumboNode* node, const std::string& uri, const size_t& level));
+	MOCK_METHOD(string, to_string, (), (const));
+	MOCK_METHOD(void, write_to_file, (const string& file_address_name), (const));
+	//have to override, but not in use:
+	MOCK_METHOD(void, print, (), (const));
+	MOCK_METHOD(void, setTimeLimit, (size_t timeLimit));
+	MOCK_METHOD(void, init, (const string&, size_t));
+	MOCK_METHOD(void, setHtmlRequest, (IHtmlRequest*));
+
+};
+
+
+
+class MyCrawlerRun : public MockCrawlerRun, protected CrawlerRun	//fake object too
+{
+public:	//all protected method set to public:
+	void setHtmlRequest(IHtmlRequest* html_request)
+	{
+		CrawlerRun::setHtmlRequest(html_request);
+	}
+public:
+	void init(const std::string& begin_address, size_t crawler_levels)
+	{
+		CrawlerRun::init(begin_address, crawler_levels);
+	}
+	void crawler(const std::string& uri, size_t level)
+	{
+		MockCrawlerRun::crawler(uri, level);	// only count
+		CrawlerRun::crawler(uri, level);
+	}
+	void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level)
+	{
+		MockCrawlerRun::search_inside_element(node, uri, level);	// only count
+		CrawlerRun::search_inside_element(node, uri, level);
+	}
+public:
+	void write_to_file(const string& file_address_name)
+	{
+		MockCrawlerRun::write_to_file(file_address_name);	// only count
+		CrawlerRun::write_to_file(file_address_name);
+	}
+	string to_string()
+	{
+		string str = MockCrawlerRun::to_string();	// only count
+		return !str.empty() ? str : CrawlerRun::to_string();
+	}
+};
+
+
+
+
 class CrawlerRunMockTest : public ::testing::Test
 {
-
-private:
-	class MockHtmlRequest : public IHtmlRequest
-	{
-	public:
-		MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
-	};
-
-private:
-	class MockCrawlerRun : public ICrawlerRun
-	{
-	public:	// basicly only ICrawlerRun public methods is important to override (set)
-		MOCK_METHOD(void, crawler, (const std::string& uri, size_t level));
-		MOCK_METHOD(void, search_inside_element, (GumboNode* node, const std::string& uri, const size_t& level));
-		MOCK_METHOD(string, to_string, (), (const));
-		MOCK_METHOD(void, write_to_file, (const string& file_address_name), (const));
-		//have to override, but not in use:
-		MOCK_METHOD(void, print, (), (const));
-		MOCK_METHOD(void, setTimeLimit, (size_t timeLimit));
-	};
-
-
-private:
-	class MyCrawlerRun : public MockCrawlerRun, protected CrawlerRun	//fake object too
-	{
-	public:	//all protected method set to public:
-		void setHtmlRequest(IHtmlRequest* html_request)
-		{
-			CrawlerRun::setHtmlRequest(html_request);
-		}
-	public:
-		void init(const std::string& begin_address, size_t crawler_levels)
-		{
-			CrawlerRun::init(begin_address, crawler_levels);
-		}
-		void crawler(const std::string& uri, size_t level)
-		{
-			MockCrawlerRun::crawler(uri, level);	// only count
-			CrawlerRun::crawler(uri, level);
-		}
-		void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level)
-		{
-			MockCrawlerRun::search_inside_element(node, uri, level);	// only count
-			CrawlerRun::search_inside_element(node, uri, level);
-		}
-	public:
-		void write_to_file(const string& file_address_name)
-		{
-			MockCrawlerRun::write_to_file(file_address_name);	// only count
-			CrawlerRun::write_to_file(file_address_name);
-		}
-		string to_string()
-		{
-			string str = MockCrawlerRun::to_string();	// only count
-			return !str.empty() ? str : CrawlerRun::to_string();
-		}
-	};
 
 
 public:
