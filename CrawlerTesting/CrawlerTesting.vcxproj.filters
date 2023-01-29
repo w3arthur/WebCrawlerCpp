@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="AddressCombinerTest.cpp" />
     <ClCompile Include="CrawlerRunTest.cpp" />
-    <ClCompile Include="TrueTest.cpp" />
     <ClCompile Include="Utils.cpp">
       <Filter>Mudels</Filter>
     </ClCompile>
