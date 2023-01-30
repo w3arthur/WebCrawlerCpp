@@ -26,7 +26,7 @@ extern class MyCrawlerRun;
 
 
 #if 0
-TEST(MockCrawlerExam, DISABLED_NiceMockTest)	//on development
+TEST(MockCrawlerExam, NiceMockTest)	//on development
 {
 
 	NiceMock<MyCrawlerRun> cr;
