@@ -1,4 +1,3 @@
-prefix=${pcfiledir}/../..
 #***************************************************************************
 #                                  _   _ ____  _
 #  Project                     ___| | | |  _ \| |
@@ -6,7 +5,7 @@ prefix=${pcfiledir}/../..
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2022, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -22,20 +21,8 @@ prefix=${pcfiledir}/../..
 # SPDX-License-Identifier: curl
 #
 ###########################################################################
+SUBDIRS = curl
 
-# This should most probably benefit from getting a "Requires:" field added
-# dynamically by configure.
-#
-exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
-supported_protocols="DICT FILE FTP FTPS GOPHER GOPHERS HTTP HTTPS IMAP IMAPS MQTT POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP"
-supported_features="SSL IPv6 unixsockets libz AsynchDNS Largefile SSPI alt-svc HSTS SPNEGO Kerberos NTLM unicode"
+EXTRA_DIST = README.md
 
-Name: libcurl
-URL: https://curl.se/
-Description: Library to transfer files with ftp, http, etc.
-Version: 7.84.0-DEV
-Libs: -L"${libdir}" -llibcurl 
-Libs.private:  -lwinmm -lws2_32 -lzlib -ladvapi32 -lcrypt32
-Cflags: -I"${includedir}" 
+AUTOMAKE_OPTIONS = foreign no-dependencies

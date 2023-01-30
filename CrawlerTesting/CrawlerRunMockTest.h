@@ -79,7 +79,7 @@ public:
 
 
 
-class CrawlerRunMockTest : public ::testing::Test
+class CrawlerRunMockTest: public ::testing::Test
 {
 
 

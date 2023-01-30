@@ -1,4 +1,3 @@
-prefix=${pcfiledir}/../..
 #***************************************************************************
 #                                  _   _ ____  _
 #  Project                     ___| | | |  _ \| |
@@ -6,7 +5,7 @@ prefix=${pcfiledir}/../..
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2022, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -22,20 +21,21 @@ prefix=${pcfiledir}/../..
 # SPDX-License-Identifier: curl
 #
 ###########################################################################
+pkginclude_HEADERS = \
+  curl.h curlver.h easy.h mprintf.h stdcheaders.h multi.h \
+  typecheck-gcc.h system.h urlapi.h options.h header.h websockets.h
 
-# This should most probably benefit from getting a "Requires:" field added
-# dynamically by configure.
-#
-exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
-supported_protocols="DICT FILE FTP FTPS GOPHER GOPHERS HTTP HTTPS IMAP IMAPS MQTT POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP"
-supported_features="SSL IPv6 unixsockets libz AsynchDNS Largefile SSPI alt-svc HSTS SPNEGO Kerberos NTLM unicode"
+pkgincludedir= $(includedir)/curl
 
-Name: libcurl
-URL: https://curl.se/
-Description: Library to transfer files with ftp, http, etc.
-Version: 7.84.0-DEV
-Libs: -L"${libdir}" -llibcurl 
-Libs.private:  -lwinmm -lws2_32 -lzlib -ladvapi32 -lcrypt32
-Cflags: -I"${includedir}" 
+CHECKSRC = $(CS_$(V))
+CS_0 = @echo "  RUN     " $@;
+CS_1 =
+CS_ = $(CS_0)
+
+checksrc:
+	$(CHECKSRC)@PERL@ $(top_srcdir)/scripts/checksrc.pl -D$(top_srcdir)/include/curl $(pkginclude_HEADERS)
+
+if CURLDEBUG
+# for debug builds, we scan the sources on all regular make invokes
+all-local: checksrc
+endif
