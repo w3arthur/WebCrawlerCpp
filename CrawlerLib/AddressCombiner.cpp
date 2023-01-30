@@ -80,6 +80,7 @@ string combiner(string uri1, string uri2)
     bool slash = false;
     if (!sub_uri1.empty() && !sub_uri2.empty() && sub_uri1.back() != '/' && sub_uri2.front() != '/') slash = true;
 
+
     return string(sub_uri1) + (slash ? "/" : "") + string(sub_uri2);
     
 

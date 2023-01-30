@@ -4,9 +4,6 @@
 //#include "MockHtmlRequest" #include "MyCrawlerRun.h" #include <ICrawlerRun.h>  #include <CrawlerRun.h> 
 //#include "Utils.h"
 
-
-
-
 #pragma warning(disable:4996)
 
 using ::testing::AtLeast;
@@ -20,19 +17,12 @@ using ::testing::NiceMock;
 extern class CrawlerRunMockTest;
 
 
-
 #include "CrawlerRunMockTest.h"
 
 
-	//on development: try to develop
+extern class CrawlerRunMockTest;
 
-class MockHtmlRequest2 : public IHtmlRequest
-{
-public:
-	MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
-	//MOCK_METHOD1(getHtml, std::string(const std::string uri));
-};
-
+extern class MyCrawlerRun;
 
 
 
@@ -41,7 +31,16 @@ TEST(MockCrawlerExam, DISABLED_NiceMockTest)	//on development
 
 	NiceMock<MyCrawlerRun> cr;
 
-	auto mockhtml = new MockHtmlRequest2();
+	extern class IHtmlRequest;
+
+	class MockHtmlRequest : public IHtmlRequest
+	{
+	public:
+		MOCK_METHOD(std::string, getHtml, (const std::string));//, (const)
+		//MOCK_METHOD1(getHtml, std::string(const std::string uri));
+	};
+
+	auto mockhtml = new MockHtmlRequest();
 
 
 	EXPECT_CALL(cr, to_string()).Times(AtLeast(1));
