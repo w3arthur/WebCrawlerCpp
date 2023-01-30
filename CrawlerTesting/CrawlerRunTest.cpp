@@ -25,7 +25,7 @@ extern class CrawlerRunMockTest;
 extern class MyCrawlerRun;
 
 
-
+#if 0
 TEST(MockCrawlerExam, DISABLED_NiceMockTest)	//on development
 {
 
@@ -57,7 +57,7 @@ TEST(MockCrawlerExam, DISABLED_NiceMockTest)	//on development
 	auto result{ R"({"results":[{"depth":1,"imageUrl":"http://www.site.com/ssss.jpg","sourceUrl":"http://www.site.com"}]})" };
 	EXPECT_EQ(assume, result);
 }
-
+#endif
 
 
 #if 1
