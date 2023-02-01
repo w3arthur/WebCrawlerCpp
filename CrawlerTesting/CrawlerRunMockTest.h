@@ -34,8 +34,8 @@ public:	// basicly only ICrawlerRun public methods is important to override (set
 	//have to override, but not in use:
 	MOCK_METHOD(void, print, (), (const));
 	MOCK_METHOD(void, setTimeLimit, (size_t timeLimit));
-	MOCK_METHOD(void, init, (const string&, size_t));
-	MOCK_METHOD(void, setHtmlRequest, (IHtmlRequest*));
+	MOCK_METHOD(void, init, (const string&, size_t));	//protected
+	MOCK_METHOD(void, setHtmlRequest, (IHtmlRequest*));	//protected
 
 };
 
@@ -106,6 +106,7 @@ public:
 		mockHtmlReques = new MockHtmlRequest();
 		myCrawlerRun->setHtmlRequest(mockHtmlReques);
 
+			//basic expectations from mock crawler run
 		EXPECT_CALL(getMcokCrawlerRun(), crawler(_, _)).Times(AtLeast(1));
 		EXPECT_CALL(getMcokCrawlerRun(), search_inside_element(_, _, _))
 			.Times(AtLeast(at_laset_mock_string_levels));
