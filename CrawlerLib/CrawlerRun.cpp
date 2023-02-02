@@ -79,7 +79,6 @@ void CrawlerRun::timeout_init(const std::string& begin_address, size_t crawler_l
     }
     catch (...)
     {
-        
         return;
     }
 }
