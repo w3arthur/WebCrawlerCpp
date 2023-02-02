@@ -48,6 +48,7 @@ protected: //set as protected!, rty to delete virtual
     void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level);
 
 private:
+    std::vector<std::thread> threadGlobalList;
     void timeout_init(const std::string& begin_address, size_t crawler_levels);
     std::string html_get(const string& address) const;
 };

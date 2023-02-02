@@ -12,7 +12,7 @@
 
 std::string CrawlerRun::html_get(const string& uri) const
 {
-    return html_request->getHtml(uri);
+        return html_request->getHtml(uri);
 }
 
 CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
@@ -62,7 +62,7 @@ string CrawlerRun::to_string() const
 void CrawlerRun::timeout_init(const std::string& begin_address, size_t crawler_levels)
 {
     try {
-        std::packaged_task<void()> task([&]() {return init(begin_address, crawler_levels);});
+        std::packaged_task<void()> task([&]() { return init(begin_address, crawler_levels); });
         auto future = task.get_future();
         std::thread thr(std::move(task));
         if (future.wait_for(std::chrono::seconds(time_limit_sec)) != std::future_status::timeout)
@@ -72,6 +72,8 @@ void CrawlerRun::timeout_init(const std::string& begin_address, size_t crawler_l
         }
         else
         {
+            //for (auto& t : threadGlobalList)
+            //    if (t.joinable())t.detach();
             thr.detach(); // we leave the thread still running
             std::cout << "Run time error, runs over (" << time_limit_sec << ") sec \n";
             throw std::runtime_error("Timeout");
@@ -79,6 +81,7 @@ void CrawlerRun::timeout_init(const std::string& begin_address, size_t crawler_l
     }
     catch (...)
     {
+
         return;
     }
 }
@@ -93,19 +96,30 @@ void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
     levels[1].push_back(begin_address);
     for (size_t i{ 1 }; i <= crawler_levels; ++i)
     {
-        std::vector<std::thread> threadGlobalList;
+        /*std::vector<std::thread> threadGlobalList;*/
         if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadGlobalList.reserve(levels[i].size());
         else break; //no elements on i level
         for (auto& address : levels[i]) //crawler(address, i);
             threadGlobalList.push_back(std::thread(&CrawlerRun::crawler, this, address, i));   /////
         for (auto& t : threadGlobalList)
-            t.join();
+            if(t.joinable())t.join();
     }
     auto stopTime{ std::chrono::high_resolution_clock::now() };
     auto duration{ std::chrono::duration_cast<std::chrono::seconds> (stopTime - startTime) };
     lastDurationSec = duration.count();
 }
 
+
+
+class PageDataSet
+{
+private:
+    GumboOutput* output;
+public:
+    PageDataSet(const string& contents) : output{ gumbo_parse(contents.c_str()) } {}
+    ~PageDataSet() { gumbo_destroy_output(&kGumboDefaultOptions, output); }
+    GumboNode* getNode() { return output->root; }
+};
 
 void CrawlerRun::crawler(const string& uri, size_t level)
 {
@@ -115,10 +129,15 @@ void CrawlerRun::crawler(const string& uri, size_t level)
             )
     {  visitedUri.insert(uri); }
     else return;
+
     string contents = html_get(uri);
-    GumboOutput* output = gumbo_parse(contents.c_str());
-    search_inside_element(output->root, uri, level);
-    gumbo_destroy_output(&kGumboDefaultOptions, output);        //fix as destructure
+
+
+    PageDataSet nodeSet(contents);
+    auto node = nodeSet.getNode();
+    if (node->type != GUMBO_NODE_ELEMENT) return;
+    search_inside_element(node, uri, level);
+           //fix as destructure
 }
 
 
