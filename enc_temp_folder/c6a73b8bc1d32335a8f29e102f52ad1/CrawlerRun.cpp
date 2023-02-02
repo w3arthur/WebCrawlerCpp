@@ -116,6 +116,7 @@ void CrawlerRun::crawler(const string& uri, size_t level)
             )
     {  visitedUri.insert(uri); }
     else return;
+
     string contents = html_get(uri);
     GumboOutput* output = gumbo_parse(contents.c_str());
     search_inside_element(output->root, uri, level);

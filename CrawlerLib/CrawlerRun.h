@@ -14,7 +14,7 @@ protected:  //resurce for testing
 private:
     string begin_address{ "" };
     size_t crawler_levels{ 0 };
-    size_t timeLimit{ 100 };   //to set
+    size_t time_limit_sec{ 100 };   //to set
     long long lastDurationSec{ 0 };
 
 private:
@@ -48,6 +48,7 @@ protected: //set as protected!, rty to delete virtual
     void search_inside_element(GumboNode* node, const std::string& uri, const size_t& level);
 
 private:
+    void timeout_init(const std::string& begin_address, size_t crawler_levels);
     std::string html_get(const string& address) const;
 };
 
