@@ -8,17 +8,23 @@
 //#include <thread>
 //#include <chrono>
 //constructor
+#include <exception>
 
-
-std::string CrawlerRun::html_get(const string& uri) const
+std::string CrawlerRun::html_get(const string& uri) const  noexcept
 {
-        return html_request->getHtml(uri);
+    try {
+        //add some condition!
+        if (isError) throw std::exception("fail html");
+        string str = html_request->getHtml(uri);
+        return str;
+    }
+    catch (...) { return ""; }
 }
 
 CrawlerRun::CrawlerRun(const string& begin_address, size_t crawler_levels)
 {
     html_request = new HtmlRequest();
-    
+    isError = false;
     //init(begin_address, crawler_levels);
     timeout_init(begin_address, crawler_levels);
 }
@@ -72,8 +78,8 @@ void CrawlerRun::timeout_init(const std::string& begin_address, size_t crawler_l
         }
         else
         {
-            //for (auto& t : threadGlobalList)
-            //    if (t.joinable())t.detach();
+            
+            isError = true;
             thr.detach(); // we leave the thread still running
             std::cout << "Run time error, runs over (" << time_limit_sec << ") sec \n";
             throw std::runtime_error("Timeout");
@@ -81,13 +87,15 @@ void CrawlerRun::timeout_init(const std::string& begin_address, size_t crawler_l
     }
     catch (...)
     {
-
+        for (auto& t : threadGlobalList)
+            if (t.joinable())t.detach();
         return;
     }
 }
 
 void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
 {
+    
     this->begin_address = begin_address;
     this->crawler_levels = crawler_levels;
     lastDurationSec = 0;
@@ -100,13 +108,14 @@ void CrawlerRun::init(const std::string& begin_address, size_t crawler_levels)
         if (levels.find(i) != levels.end() && !levels.at(i).empty()) threadGlobalList.reserve(levels[i].size());
         else break; //no elements on i level
         for (auto& address : levels[i]) //crawler(address, i);
-            threadGlobalList.push_back(std::thread(&CrawlerRun::crawler, this, address, i));   /////
+                threadGlobalList.emplace_back(&CrawlerRun::crawler, this, address, i);   /////
         for (auto& t : threadGlobalList)
-            if(t.joinable())t.join();
+                if(t.joinable())t.join();
+        
     }
     auto stopTime{ std::chrono::high_resolution_clock::now() };
     auto duration{ std::chrono::duration_cast<std::chrono::seconds> (stopTime - startTime) };
-    lastDurationSec = duration.count();
+    auto lastDurationSec = duration.count();
 }
 
 
@@ -132,11 +141,11 @@ void CrawlerRun::crawler(const string& uri, size_t level)
 
     string contents = html_get(uri);
 
-
     PageDataSet nodeSet(contents);
     auto node = nodeSet.getNode();
     if (node->type != GUMBO_NODE_ELEMENT) return;
-    search_inside_element(node, uri, level);
+    if(!isError)
+        search_inside_element(node, uri, level);
            //fix as destructure
 }
 
@@ -150,9 +159,8 @@ void CrawlerRun::search_inside_element(GumboNode* node, const string& uri, const
             && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))
             )
     {
-        std::lock_guard<std::mutex> lock(levels_m);
-        // levels.emplace(level + 1, href->value);
         string hrefValue{ combiner(uri, static_cast<string>(href->value)) };
+        std::lock_guard<std::mutex> lock(levels_m);
         levels[level + 1].push_back(hrefValue);
     }   //end mutex guard
     else if (
@@ -168,8 +176,9 @@ void CrawlerRun::search_inside_element(GumboNode* node, const string& uri, const
                 )
         {
             visitedImageUri.insert(srcValue);
-            images.push_back(Image(srcValue, uri, level));
-            json_images["results"].emplace_back(Image(srcValue, uri, level).to_json());
+            auto image = Image(srcValue, uri, level);
+            json_images["results"].emplace_back(image.to_json());
+            images.push_back(std::move(image));  //Image(srcValue, uri, level)
         }   //end mutex guard
     }
     GumboVector* children = &node->v.element.children;  //moving through all the nodes in HTML document

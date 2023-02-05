@@ -8,6 +8,8 @@
 
 class CrawlerRun : public ICrawlerRun
 {
+private:
+    bool isError{ false };
 protected:  //resurce for testing
     IHtmlRequest* html_request = nullptr;   //will set in constructore
     void setHtmlRequest(IHtmlRequest* html_request) { this->html_request = html_request; }
@@ -33,7 +35,7 @@ private:
 
 public:
     explicit CrawlerRun(const std::string& begin_address, size_t crawler_levels);
-    ~CrawlerRun() { delete html_request; }
+    ~CrawlerRun() {  delete html_request; }
 
 public:
     void setTimeLimit(size_t timeLimit);  //to set
@@ -50,7 +52,7 @@ protected: //set as protected!, rty to delete virtual
 private:
     std::vector<std::thread> threadGlobalList;
     void timeout_init(const std::string& begin_address, size_t crawler_levels);
-    std::string html_get(const string& address) const;
+    std::string html_get(const string& address) const noexcept;
 };
 
 
